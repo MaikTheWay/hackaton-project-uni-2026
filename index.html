@@ -1,0 +1,2443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation A COBRA VAI FUMAR | Hackathon de Criptografia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&family=Courier+Prime&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a0a0f;
+            --secondary: #12121a;
+            --accent: #e94560;
+            --success: #00ff88;
+            --warning: #ffc107;
+            --text-primary: #eaeaea;
+            --text-secondary: #8b8b8b;
+            --border: #2d2d44;
+            --terminal-green: #00ff41;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(90deg, rgba(45,45,68,0.03) 1px, transparent 1px),
+                linear-gradient(rgba(45,45,68,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Scanline effect */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1),
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.3;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .classified-stamp {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            padding: 6px 20px;
+            letter-spacing: 4px;
+            margin-bottom: 24px;
+            transform: rotate(-2deg);
+            display: inline-block;
+        }
+
+        .header h1 {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 3rem;
+            letter-spacing: 6px;
+            margin-bottom: 16px;
+            text-shadow: 0 0 40px rgba(233, 69, 96, 0.3);
+        }
+
+        .header h1 span {
+            color: var(--accent);
+        }
+
+        .header-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Terminal */
+        .terminal {
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .terminal-header {
+            background: linear-gradient(180deg, #1a1a24, #12121a);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-title {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+            margin-right: auto;
+            letter-spacing: 1px;
+        }
+
+        .terminal-body {
+            padding: 24px;
+            min-height: 600px;
+            max-height: 75vh;
+            overflow-y: auto;
+            background: linear-gradient(180deg, #0a0a0f 0%, #0f0f18 100%);
+        }
+
+        .terminal-line {
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .terminal-line.system { color: var(--text-secondary); }
+        .terminal-line.input { color: var(--terminal-green); }
+        .terminal-line.output { color: var(--accent); }
+        .terminal-line.success { color: var(--success); }
+        .terminal-line.warning { color: var(--warning); }
+        .terminal-line.title { color: var(--accent); font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; letter-spacing: 2px; }
+        .terminal-line.narrative { color: #a8a8a8; font-style: italic; }
+        .terminal-line.spec { color: #6eb5ff; }
+        .terminal-line.code { color: var(--terminal-green); background: rgba(0, 255, 65, 0.05); padding: 8px 12px; border-radius: 4px; display: block; }
+        .terminal-line.divider { color: var(--border); margin: 12px 0; }
+
+        /* Mission Panel */
+        .mission-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .mission-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mission-badge {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .mission-points {
+            color: var(--warning);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .mission-difficulty {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 3px;
+            margin-left: 8px;
+            font-weight: bold;
+        }
+
+        .mission-difficulty.basico { background: var(--success); color: var(--primary); }
+        .mission-difficulty.intermediario { background: var(--warning); color: var(--primary); }
+        .mission-difficulty.avancado { background: var(--accent); color: white; }
+
+        .mission-narrative {
+            color: #b8b8b8;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .mission-section {
+            margin-bottom: 16px;
+        }
+
+        .mission-section-title {
+            color: var(--success);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .spec-item {
+            background: rgba(0, 255, 65, 0.05);
+            padding: 10px 14px;
+            border-left: 3px solid var(--success);
+            margin-bottom: 8px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 0.9rem;
+        }
+
+        .spec-item strong {
+            color: var(--warning);
+        }
+
+        .spec-item code {
+            background: rgba(233, 69, 96, 0.2);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: var(--accent);
+        }
+
+        /* Terminal Input Area */
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 24px;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid var(--border);
+        }
+
+        .terminal-prompt {
+            color: var(--terminal-green);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            white-space: nowrap;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'Courier Prime', monospace;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .terminal-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 24px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; letter-spacing: 3px; }
+            .terminal-body { padding: 16px; min-height: 500px; }
+            .terminal-line { font-size: 0.9rem; }
+            .container { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="classified-stamp">DOCUMENTO CLASSIFICADO</div>
+            <h1>OPERATION <span>"A COBRA VAI FUMAR"</span></h1>
+            <p class="header-subtitle">
+                Hackathon de Criptografia para turmas de Computação da Unimetrocamp. 
+                <br /> O destino da missão depende de você. Boa sorte, agente!
+            </p>
+        </header>
+
+        <div class="terminal">
+            <div class="terminal-header">
+                <div class="terminal-dot red"></div>
+                <div class="terminal-dot yellow"></div>
+                <div class="terminal-dot green"></div>
+                <span class="terminal-title">COBRINHA_TERMINAL v2.0</span>
+            </div>
+            <div class="terminal-body" id="terminalBody"></div>
+            <div class="terminal-input-line">
+                <span class="terminal-prompt">COBRINHA@OP:~$</span>
+                <input type="text" class="terminal-input" id="terminalInput" placeholder="Aguardando comandos..." autocomplete="on">
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Operation a cobra vai fumar © 2026 | Hackathon Unimetrocamp</p>
+            <p style="margin-top: 8px;">Desenvolvido por computeiros para computeiros</p>
+        </footer>
+    </div>
+
+    <script>
+        // Mission Data with full context
+        // ORDEM DE DIFICULDADE: RSA (1-Básico) -> César (2-Intermediário) -> Vigenère (3-Avançado)
+        const missions = {
+            1: {
+                id: 1,
+                title: "RSA SIMPLIFICADO",
+                subtitle: "Introdução à Criptografia Assimétrica",
+                points: 1000,
+                difficulty: "Básico",
+                narrative: `Bem-vindo, agente! Esta e a sua primeira missão na operação "A COBRA VAI FUMAR".
+Recebemos informacões de que o Sindicato está começando a usar criptografia moderna
+em suas comunicações. Para comecar, vamos entender o basico da criptografia de chave publica.
+
+O algoritmo RSA é considerado o padrão-ouro da criptografia assimétrica e usa conceitos
+de aritmetica modular com numeros primos. Nesta missão inicial, voce vai implementar
+uma versao simplificada para entender os conceitos fundamentais.`,
+                mission: `Sua missao e implementar o algoritmo RSA SIMPLIFICADO para criptografar e descriptografar mensagens.`,
+                inputs: `
+ENTRADA:
+- Mensagem (M): string de texto
+- Primo p: numero primo
+- Primo q: numero primo
+- Chave publica e: numero inteiro coprimo com phi
+- Modo: "criptografar" ou "descriptografar"`,
+
+                rules: `
+REGRAS OBRIGATORIAS:
+> Converter texto para numeros usando Tabela ASCII (A=65, B=66, etc.)
+> Manter espacos em branco no texto
+> Tratar letras maiusculas e minusculas corretamente
+> Validar que p e q sao numeros primos
+> Validar que e e phi sao coprimos (MDC = 1)
+> Implementar tratamento de erros para entradas invalidas`,
+
+                interface: `
+INTERFACE SUGERIDA:
+Para esta missao inicial, a interface pode ser simples:
+
+1. Campo de entrada para a mensagem
+2. Campos para p, q, e
+3. Botao para criptografar e descriptografar
+4. Exibicao dos calculos intermediarios (n, phi, d)
+5. Area de resultado formatada`
+            },
+            2: {
+                id: 2,
+                title: "SISTEMA DE DETECÇÃO DE PADRÕES",
+                subtitle: "Algoritmos de Pattern Matching e Análise",
+                points: 1000,
+                difficulty: "Intermediário",
+                narrative: `Excelente trabalho com o RSA! Agora temos um novo desafio.
+O Sindicato esta transmitindo mensagens codificadas de forma incomum.
+Nossas analises revelaram que as mensagens contem PADROES REPETITIVOS
+que podem ser explorados para decifrar o codigo.
+Sua missao e implementar um sistema de DETECCAO DE PADROES que possa:
+- Identificar sequencias repetidas em qualquer texto
+- Encontrar o maior prefixo/sufixo comum
+- Detectar anagramas e palindromos
+- Calcular a distancia de Hamming entre strings
+- Implementar o algoritmo de Knuth-Morris-Pratt (KMP) para busca de padrao
+Preparese: esta missao exige logica afiada e eficiencia algoritmica!`,
+                mission: `Implemente um SISTEMA DE DETECCAO DE PADROES com as seguintes funcionalidades:
+
+1. MAIOR PREFIXO COMUM (Longest Common Prefix - LCP)
+   - Encontrar o maior prefixo comum entre N strings
+   - Entrada: Lista de strings separadas por pipe "|"
+   - Saida: O prefixo comum mais longo
+
+2. MAIOR SUFIXO COMUM (Longest Common Suffix - LCS)
+   - Encontrar o maior sufixo comum entre N strings
+   - Mesma entrada/saida do LCP
+
+3. ANAGRAMA OU NAO
+   - Verificar se duas strings sao anagramas
+   - Entrada: duas strings separadas por pipe
+   - Saida: "SIM" ou "NAO"
+
+4. E PALINDROMO
+   - Verificar se uma string e palindromo (ignorar espacos e pontuacao)
+   - Entrada: uma string
+   - Saida: "SIM" ou "NAO"
+
+5. DISTANCIA DE HAMMING
+   - Calcular o numero de posicoes diferentes entre duas strings de mesmo tamanho
+   - Entrada: duas strings separadas por pipe
+   - Saida: numero inteiro
+
+6. BUSCA KMP (Knuth-Morris-Pratt)
+   - Implementar busca de padrao usando o algoritmo KMP
+   - Entrada: texto|padrao (separados por pipe)
+   - Saida: posicoes onde o padrao ocorre (0-indexed)
+
+7. SEQUENCIA FIBONACCI IDENTIFICADA
+   - Verificar se uma sequencia de numeros segue Fibonacci
+   - Entrada: numeros separados por espacos
+   - Saida: "SIM" ou "NAO"
+
+8. SUBSEQUENCIA CRESCENTE MAXIMA
+   - Encontrar a maior subsequencia crescente em uma sequencia
+   - Entrada: numeros separados por espacos
+   - Saida: a subsequencia em ordem` ,
+                inputs: `
+ENTRADA:
+Cada comando recebe parametros separados por pipe "|" ou espacos:
+
+COMANDO 1: lcp <str1>|<str2>|...|<strN>
+EXEMPLO: lcp "formula1|formula2|formula3"
+SAIDA: "formula"
+
+COMANDO 2: lcs <str1>|<str2>|...|<strN>
+EXEMPLO: lcs "samba|maramba"
+SAIDA: "amba"
+
+COMANDO 3: anagrama <str1>|<str2>
+EXEMPLO: anagrama "listen|silent"
+SAIDA: "SIM"
+
+COMANDO 4: palindromo <texto>
+EXEMPLO: palindromo "A base do teto desata"
+SAIDA: "SIM"
+
+COMANDO 5: hamming <str1>|<str2>
+EXEMPLO: hamming "karolin|kathrin"
+SAIDA: 3
+
+COMANDO 6: kmp <texto>|<padrao>
+EXEMPLO: kmp "ABABDABACDABABCABAB|ABAB"
+SAIDA: [0, 10, 15]
+
+COMANDO 7: fibonacci <n1> <n2> ... <nN>
+EXEMPLO: fibonacci 1 1 2 3 5 8 13
+SAIDA: "SIM"
+
+COMANDO 8: lcs_increasing <n1> <n2> ... <nN>
+EXEMPLO: lcs_increasing 10 22 9 33 41 60 80
+SAIDA: 10 22 33 41 60 80`,
+                rules: `
+REGRAS OBRIGATORIAS:
+> Implementar TODOS os 8 algoritmos listados acima
+> Tratar entradas invalidas com mensagens de erro claras
+> LCP/LCS devem funcionar com qualquer quantidade de strings
+> Palindromo deve ignorar espacos, pontuacao e ser case-insensitive
+> Hamming ONLY funciona com strings de mesmo tamanho (erro se diferente)
+> KMP deve calcular a tabela de prefixo (Failure Function) corretamente
+> Fibonacci deve verificar TODA a sequencia (nao apenas se e Fibonacci)
+> LCS Increasing deve retornar a subsequencia em ordem original
+> Complexidade de KMP deve ser O(n+m) onde n=texto e m=padrao
+> Tratar strings vazias, espacos em excesso e entrada mal formatada
+> MANEIRA EFICIENTE: usar programacao dinamica para LCS
+> Validacao ROBUSTA de entrada em todos os algoritmos`,
+                interface: `
+INTERFACE SUGERIDA:
+Interface de teste para os analistas:
+
+1. Menu lateral com todos os 8 algoritmos
+2. Campo de entrada dinamico baseado no algoritmo selecionado
+3. Visualizacao do resultado e dos passos intermediarios
+4. Botao para ver o algoritmo funcionando passo a passo
+5. Area de DEBUG mostrando calculos internos
+6. Botao de copiar resultado
+7. Modo de teste automatico com casos de uso
+
+PARA KMP: Mostrar a tabela de prefixo computada
+PARA LCS_INCREASING: Mostrar a matriz DP se necessario`
+            },
+            3: {
+                id: 3,
+                title: "OTIMIZADOR DE ROTEIROS",
+                subtitle: "Grafos, Programação Dinâmica e Backtracking",
+                points: 1000,
+                difficulty: "Avançado",
+                narrative: `INCRIVEL! Voce destruiu todos os desafios anteriores!
+Mas prepare-se: esta e a missao FINAL e a mais desafiadora de todas.
+Interceptamos informacoes sobre a rede de contato do Sindicato.
+Precisamos encontrar a MELHOR ROTA para nossas equipes de campo.
+O problema envolve otimizacao combinatoria extrema:
+- Grafo com ate 50 vertices e 200 arestas
+- Múltiplos pontos de partida e chegada
+- Restricoes de tempo e recursos
+- Escolhas que afetam escolhas futuras
+Isso combina grafos, programacao dinamica e backtracking em um unico desafio!
+Esta e a sua chance de demostrar que e um VERDADEIRO MESTRE DA LOGICA!`,
+                mission: `Implemente um OTIMIZADOR DE ROTEIROS com as seguintes funcionalidades:
+
+1. ALGORITMO DE DIJKSTRA
+   - Encontrar o caminho mais curto entre dois vertices em um grafo ponderado
+   - Entrada: matriz de adjacencia seguida de vertice inicial e final
+   - Saida: distancia minima e o caminho
+
+2. PERCURSO EM PROFUNDIDADE (DFS)
+   - Implementar DFS iterativo E recursivo
+   - Entrada: lista de adjacencia e vertice inicial
+   - Saida: ordem de visitacao dos vertices
+
+3. ORDENACAO TOPOLOGICA
+   - Ordenar vertices de um DAG (grafo directed acyclic) em ordem topologica
+   - Entrada: lista de adjacencia do grafo direcionado
+   - Saida: ordem topologica dos vertices
+
+4. PROBLEMA DO CAIXEIRO VIAJANTE (TSP) - versao simples
+   - Encontrar o menor caminho que visita todos os vertices exatamente uma vez
+   - Usar forca bruta para grafos de ate 10 vertices
+   - Entrada: matriz de adjacencia
+   - Saida: custo minimo e vertices na ordem do percurso
+
+5. MAIOR CAMINHO EM DAG
+   - Encontrar o caminho maximo em um DAG ponderado
+   - Usar programacao dinamica (top-down com memoization)
+   - Entrada: grafo direcionado aciclico ponderado
+   - Saida: maior caminho e seu peso
+
+6. SUBSET SUM
+   - Determinar se existe subconjunto que soma a um valor target
+   - Usar programacao dinamica
+   - Entrada: lista de numeros e target
+   - Saida: "SIM" + o subconjunto ou "NAO"
+
+7. MOCHILA 0/1
+   - Resolver o problema da mochila com programacao dinamica
+   - Entrada: capacidades, pesos e valores de N itens
+   - Saida: valor maximo e itens selecionados
+
+8. SUDOKU SOLVER
+   - Resolver qualquer Sudoku 9x9 valido
+   - Usar backtracking com pruning de dominios
+   - Entrada: 81 numeros (0 para espacos vazios)
+   - Saida: tabuleiro resolvido ou "SEM SOLUCAO"
+
+9. QUEBRADOR DE SENHA
+   - Implementar gerador de combinacoes para forca bruta
+   - Testar palavras de um dicionario
+   - Entrada: hash a quebrar + tipo de hash (simulado) + lista de palavras
+   - Saida: palavra encontrada ou "NAO ENCONTRADA"` ,
+                inputs: `
+ENTRADA:
+Cada comando recebe parametros no seguinte formato:
+
+COMANDO 1: dijkstra
+ENTRADA:
+4              (numero de vertices)
+0 5 99 99      (matriz: 99 = sem aresta)
+5 0 3 7
+99 3 0 2
+99 7 2 0
+0 3           (vertice inicial e final)
+SAIDA: distancia=10, caminho=[0,1,2,3]
+
+COMANDO 2: dfs
+ENTRADA:
+5              (vertices)
+0 1 1 0 0      (adjacencias)
+1 0 0 1 0
+1 0 0 1 1
+0 1 1 0 1
+0 0 1 1 0
+0              (vertice inicial)
+SAIDA: 0 1 3 2 4
+
+COMANDO 3: topsort
+ENTRADA:
+6
+0 1 0 0 0 0
+0 0 1 0 0 0
+0 0 0 1 0 0
+0 0 0 0 1 0
+0 0 0 0 0 1
+0 0 0 0 0 0
+SAIDA: 0 1 2 3 4 5
+
+COMANDO 4: tsp
+ENTRADA:
+4
+0 10 15 20
+10 0 35 25
+15 35 0 30
+20 25 30 0
+SAIDA: custo=95, rota=[0,1,3,2]
+
+COMANDO 5: dag_path
+ENTRADA:
+6
+0 5 99 99 99 99
+99 0 99 99 99 99
+99 99 0 99 99 99
+99 99 2 0 99 99
+99 3 4 99 0 99
+99 99 99 99 1 0
+SAIDA: caminho=[0,4,1], peso=8
+
+COMANDO 6: subset_sum
+ENTRADA:
+3 15           (N=3, target=15)
+5 3 11 2
+SAIDA: SIM [5,3,2] ou [11,2]
+
+COMANDO 7: knapsack
+ENTRADA:
+4 10            (N=4, capacidade=10)
+valor: 1 2 3 4
+peso:  2 3 4 5
+SAIDA: max=4, itens=[1,2]
+
+COMANDO 8: sudoku
+ENTRADA:
+5 3 0 0 7 0 0 0 0
+6 0 0 1 9 5 0 0 0
+0 9 8 0 0 0 0 6 0
+8 0 0 0 6 0 0 0 3
+4 0 0 8 0 3 0 0 1
+7 0 0 0 2 0 0 0 6
+0 6 0 0 0 0 2 8 0
+0 0 0 4 1 9 0 0 5
+0 0 0 0 8 0 0 7 9
+SAIDA: tabuleiro resolvido
+
+COMANDO 9: brute_force
+ENTRADA:
+hash_simulado
+senha123|teste123|admin|password|12345678|ACOBRAVAIFUMAR
+SAIDA: senha123`,
+                rules: `
+REGRAS OBRIGATORIAS:
+> Implementar TODOS os 9 algoritmos listados
+> Dijkstra deve usar heap/min-priority queue para eficiencia O(E log V)
+> DFS deve funcionar tanto iterativo quanto recursivo
+> Ordenacao Topologica deve detectar ciclos (erro se ciclo existir)
+> TSP deve funcionar com backtracking + pruning (branch and bound)
+> Maior caminho em DAG: usar DP top-down com memoization
+> Subset Sum: implementar com programacao dinamica 2D
+> Mochila 0/1: implementar DP 2D ou otimizado 1D
+> Sudoku: usar backtracking com constraint propagation
+> Quebrador: gerar combinacoes de forma eficiente
+> Tratar TODOS os casos de borda e entradas invalidas
+> PERFORMANCE: TSP deve usar pruning de branch-and-bound
+> Sudoku deve ser capaz de resolver sudokus faceis em <1s
+
+DESAFIO ULTRA: Implementar o Sudoku com apenas backtracking SEM constraint propagation
+ e ver se consegue resolver sudokus medios em tempo aceitavel!`,
+                interface: `
+INTERFACE SUGERIDA:
+Interface de analista de alto nivel:
+
+1. Painel lateral com todos os 9 algoritmos
+2. Visualizacao de grafos com representacao textual
+3. Animacao dos passos do algoritmo (para Dijkstra, DFS, etc)
+4. Mostrar a tabela DP durante a execucao (Subset Sum, Mochila)
+5. Visualizacao do tabuleiro Sudoku sendo resolvido em tempo real
+6. Botao para avancar/recuar passo a passo
+7. Comparacao de performance entre diferentes abordagens
+8. Modo DEBUG com logs detalhados
+
+PARA DIJKSTRA: Mostrar o heap e relaxamento das arestas
+PARA SUDOKU: Mostrar o backtracking acontecendo celula por celula
+PARA TSP: Mostrar as rotas sendo exploradas e descartadas`
+            }
+        };
+
+        // Terminal State
+        let currentView = 'main';
+        let currentMission = null;
+
+        // Initialize
+        function init() {
+            showWelcome();
+            document.getElementById('terminalInput').focus();
+        }
+
+        // Add line to terminal
+        function addLine(text, type = 'system') {
+            const body = document.getElementById('terminalBody');
+            const div = document.createElement('div');
+            div.className = `terminal-line ${type}`;
+            div.textContent = text;
+            body.appendChild(div);
+            scrollToBottom();
+        }
+
+        // Add HTML content
+        function addHTML(html) {
+            const body = document.getElementById('terminalBody');
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            body.appendChild(div);
+            scrollToBottom();
+        }
+
+        // Scroll to bottom
+        function scrollToBottom() {
+            const body = document.getElementById('terminalBody');
+            body.scrollTop = body.scrollHeight;
+        }
+
+        // Show welcome message
+        function showWelcome() {
+            addLine('');
+            addLine('╔══════════════════════════════════════════════════════════════════════╗', 'system');
+            addLine('║                                                                      ║', 'system');
+            addLine('║     ██████╗ ██████╗ ███████╗██╗██████╗ ███╗   ███╗                   ║', 'system');
+            addLine('║     ██╔══██╗██╔══██╗██╔════╝██║██╔══██╗████╗ ████║                   ║', 'system');
+            addLine('║     ██████╔╝██████╔╝███████╗██║██████╔╝██╔████╔██║                   ║', 'system');
+            addLine('║     ██╔═══╝ ██╔══██╗╚════██║██║██╔══██╗██║╚██╔╝██║                   ║', 'system');
+            addLine('║     ██║     ██║  ██║███████║██║██║  ██║██║ ╚═╝ ██║                   ║', 'system');
+            addLine('║     ╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚═╝     ╚═╝                   ║', 'system');
+            addLine('║                                                                      ║', 'system');
+            addLine('╚══════════════════════════════════════════════════════════════════════╝', 'system');
+            addLine('');
+            addLine('> Sistema iniciado. Bem-vindo à Central de Operações.', 'system');
+            addLine('> Hackathon de Criptografia - Turmas de Computação', 'system');
+            addLine('> Digite "help" para ver comandos disponíveis.', 'system');
+            addLine('');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('  COMANDOS PRINCIPAIS:', 'title');
+            addLine('  ─────────────────────────────────────────────────────────────────────', 'system');
+            addLine('   help         → Mostrar todos os comandos', 'success');
+            addLine('   missions     → Listar as 3 missões disponíveis', 'success');
+            addLine('   clear        → Limpar terminal', 'success');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('');
+        }
+
+        // Show help
+        function showHelp() {
+            addLine('');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('  COMANDOS DISPONÍVEIS:', 'title');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('');
+            addLine('  NAVEGAÇÃO:', 'warning');
+            addLine('   help              → Mostrar esta lista de comandos', 'system');
+            addLine('   missions          → Listar todas as missões', 'system');
+            addLine('   mission <num>      → Acessar missão específica (1, 2 ou 3)', 'system');
+            addLine('   back              → Voltar ao menu principal', 'system');
+            addLine('   clear             → Limpar o terminal', 'system');
+            addLine('   info              → Informações gerais do evento', 'system');
+            addLine('');
+            addLine('  FORMATOÇÃO:', 'warning');
+            addLine('   Missions devem ser acessadas com: mission <numero>', 'system');
+            addLine('   Exemplo: mission 1, mission 2, mission 3', 'system');
+            addLine('');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('');
+        }
+
+        // Show missions list
+        function showMissionsList() {
+            addLine('');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('  ARQUIVO DE MISSÕES - OPERATION A COBRA VAI FUMAR', 'title');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('');
+
+            Object.values(missions).forEach(m => {
+                const diffLabel = m.difficulty === 'Básico' ? 'BÁSICO' : m.difficulty === 'Intermediário' ? 'INTERMEDIÁRIO' : 'AVANÇADO';
+                addLine(`  ┌─────────────────────────────────────────────────────────────────────┐`, 'system');
+                addLine(`  │  [MISSÃO ${m.id}] ${m.title.padEnd(35)} [${diffLabel}]`.padEnd(66) + '│', 'warning');
+                addLine(`  │  ${m.subtitle.padEnd(66)}│`, 'system');
+                addLine(`  │  Pontuação: até ${m.points} pontos`.padEnd(66) + '│', 'success');
+                addLine(`  │  Comando: mission ${m.id}`.padEnd(66) + '│', 'system');
+                addLine(`  └─────────────────────────────────────────────────────────────────────┘`, 'system');
+                addLine('');
+            });
+
+            addLine('  DIFICULDADE PROGRESSIVA: RSA (Básico) → César (Intermediário) → Vigenère (Avançado)', 'system');
+            addLine('');
+            addLine('  DIGITE: mission <numero> para acessar uma missão', 'system');
+            addLine('  EXEMPLO: mission 1', 'system');
+            addLine('');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('');
+        }
+
+        // Show mission details
+        function showMission(num) {
+            const mission = missions[num];
+            if (!mission) {
+                addLine(`Missão ${num} não encontrada. Missões disponíveis: 1, 2, 3`, 'output');
+                return;
+            }
+
+            currentMission = mission;
+
+            const diffClass = mission.difficulty === 'Básico' ? 'basico' : mission.difficulty === 'Intermediário' ? 'intermediario' : 'avancado';
+            const diffLabel = mission.difficulty === 'Básico' ? 'BÁSICO' : mission.difficulty === 'Intermediário' ? 'INTERMEDIÁRIO' : 'AVANÇADO';
+
+            addLine('');
+            addHTML(`
+                <div class="mission-panel">
+                    <div class="mission-panel-header">
+                        <div>
+                            <span class="mission-badge">MISSÃO ${mission.id}</span>
+                            <span class="mission-difficulty ${diffClass}">${diffLabel}</span>
+                        </div>
+                        <span class="mission-points">ATÉ ${mission.points} PONTOS</span>
+                    </div>
+                    <div class="mission-narrative">${mission.narrative.replace(/\n/g, '<br>')}</div>
+
+                    <div class="mission-section">
+                        <div class="mission-section-title">▸ MISSÃO</div>
+                        <div class="spec-item">${mission.mission.replace(/\n/g, '<br>')}</div>
+                    </div>
+
+                    <div class="mission-section">
+                        <div class="mission-section-title">▸ ENTRADA E FORMATO</div>
+                        <div class="spec-item" style="background: rgba(0, 255, 65, 0.05); border-left-color: #00ff41;">${mission.inputs.replace(/\n/g, '<br>')}</div>
+                    </div>
+
+                    <div class="mission-section">
+                        <div class="mission-section-title">▸ REGRAS OBRIGATÓRIAS</div>
+                        <div class="spec-item" style="background: rgba(255, 193, 7, 0.08); border-left-color: #ffc107;">${mission.rules.replace(/\n/g, '<br>')}</div>
+                    </div>
+
+                    <div class="mission-section">
+                        <div class="mission-section-title">▸ INTERFACE SUGERIDA</div>
+                        <div class="spec-item" style="background: rgba(110, 181, 255, 0.08); border-left-color: #6eb5ff;">${mission.interface.replace(/\n/g, '<br>')}</div>
+                    </div>
+                </div>
+            `);
+
+            addLine('');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine(`  MISSÃO ${mission.id}: ${mission.title} - ${mission.subtitle}`, 'title');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('  Digite "back" para voltar ao menu principal', 'system');
+            addLine('');
+        }
+
+        // Show info
+        function showInfo() {
+            addLine('');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('  INFORMAÇÕES DO EVENTO', 'title');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('');
+            addLine('  FORMAÇÃO DE EQUIPES:', 'warning');
+            addLine('   • Equipes de 2 a 5 agentes', 'system');
+            addLine('   • Cada equipe escolhe seu codinome', 'system');
+            addLine('   • Desenvolve a própria solução para os desafios', 'system');
+            addLine('');
+            addLine('  OS DESAFIOS:', 'warning');
+            addLine('   • 3 missões de criptografia', 'system');
+            addLine('   • Dificuldade progressiva', 'system');
+            addLine('   • As missões não podem ser puladas', 'system');
+            addLine('   • Cada missão = até 1000 pontos', 'system');
+            addLine('   • Bônus por design com acessibilidade digital e documentação', 'system');
+            addLine('');
+            addLine('  CRONOGRAMA:', 'warning');
+            addLine('   • 48 horas de operação contínua', 'system');
+            addLine('   • Início: Quarta-feira 19:15h', 'system');
+            addLine('   • Término: Quinta-feira 20:30h (premiação)', 'system');
+            addLine('   • Entrega final: Testes + Documentação + Premiação', 'system');
+            addLine('');
+            addLine('  CRITÉRIOS DE AVALIAÇÃO:', 'warning');
+            addLine('   • Pontuação total das missões', 'system');
+            addLine('   • Qualidade da documentação', 'system');
+            addLine('   • Apresentação final dos grupos (pitch)', 'system');
+            addLine('');
+            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
+            addLine('');
+        }
+
+        // Process command
+        function processCommand(cmd) {
+            const parts = cmd.trim().toLowerCase().split(/\s+/);
+            const command = parts[0];
+            const arg = parts[1];
+
+            switch(command) {
+                case '':
+                    break;
+
+                case 'help':
+                case 'ajuda':
+                    showHelp();
+                    break;
+
+                case 'missions':
+                case 'lista':
+                    showMissionsList();
+                    break;
+
+                case 'mission':
+                case 'm':
+                    if (arg && ['1', '2', '3'].includes(arg)) {
+                        showMission(parseInt(arg));
+                    } else {
+                        addLine('Uso: mission <numero>', 'output');
+                        addLine('Exemplo: mission 1, mission 2, mission 3', 'system');
+                    }
+                    break;
+
+                case 'back':
+                case 'voltar':
+                case 'menu':
+                    currentMission = null;
+                    showMissionsList();
+                    break;
+
+                case 'clear':
+                case 'cls':
+                    document.getElementById('terminalBody').innerHTML = '';
+                    addLine('Terminal limpo.', 'system');
+                    addLine('');
+                    break;
+
+                case 'info':
+                case 'informacoes':
+                    showInfo();
+                    break;
+
+                // Easter eggs
+                case 'start':
+                    if (arg && ['1', '2', '3'].includes(arg)) {
+                        addLine('Iniciando missão ' + arg + '...', 'success');
+                        setTimeout(() => showMission(parseInt(arg)), 500);
+                    } else {
+                        addLine('Uso: start <numero> (1, 2 ou 3)', 'output');
+                    }
+                    break;
+
+                case 'hello':
+                case 'hi':
+                    addLine('Olá, agente! Boa sorte na missão!', 'success');
+                    break;
+
+                case 'matrix':
+                    addLine('Wake up, Neo...', 'system');
+                    addLine('The Matrix has you...', 'system');
+                    addLine('Follow the white rabbit.', 'success');
+                    break;
+
+                default:
+                    addLine(`Comando não reconhecido: "${command}"`, 'output');
+                    addLine('Digite "help" para ver comandos disponíveis.', 'system');
+            }
+        }
+
+        // Handle input
+        document.getElementById('terminalInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const input = this;
+                const cmd = input.value.trim();
+
+                if (cmd) {
+                    addLine(`COBRINHA@OP:~$ ${cmd}`, 'input');
+                    processCommand(cmd);
+                }
+
+                input.value = '';
+            }
+        });
+
+        // Keep focus
+        document.addEventListener('click', () => {
+            document.getElementById('terminalInput').focus();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+<script>
+/**
+ * Iframe 元素高亮注入脚本
+ * 需要在目标网站中引入此脚本来支持跨域 iframe 高亮功能
+ *
+ * 使用方法：
+ * 1. 将此脚本添加到目标网站的 HTML 中
+ * 2. 或通过浏览器扩展、用户脚本等方式注入
+ */
+
+(function () {
+  "use strict";
+
+  // 检查是否在 iframe 中
+  if (window.self === window.top) {
+    return; // 不在 iframe 中，不执行
+  }
+
+  // 检查是否已经初始化过
+  if (window.__iframeHighlightInitialized) {
+    return;
+  }
+  window.__iframeHighlightInitialized = true;
+  console.log("Iframe 高亮脚本已加载");
+
+  // 创建高亮覆盖层
+  var overlay = document.createElement("div");
+  overlay.id = "iframe-highlight-overlay";
+  overlay.style.cssText = "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
+
+  // 创建悬停高亮框（虚线边框）
+  var highlightBox = document.createElement("div");
+  highlightBox.id = "iframe-highlight-box";
+  highlightBox.style.cssText = "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
+
+  // 创建选中节点的常驻高亮框（实线边框）
+  var selectedBox = document.createElement("div");
+  selectedBox.id = "iframe-selected-box";
+  selectedBox.style.cssText = "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
+
+  // 创建悬停标签显示
+  var tagLabel = document.createElement("div");
+  tagLabel.id = "iframe-tag-label";
+  tagLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
+
+  // 创建选中节点标签
+  var selectedLabel = document.createElement("div");
+  selectedLabel.id = "iframe-selected-label";
+  selectedLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
+  overlay.appendChild(highlightBox);
+  overlay.appendChild(selectedBox);
+  overlay.appendChild(tagLabel);
+  overlay.appendChild(selectedLabel);
+  document.body.appendChild(overlay);
+
+  // 存储当前选中的元素
+  var selectedElement = null;
+  var highlightEnabled = false;
+
+  // 更新选中元素的高亮显示
+  function updateSelectedHighlight(element) {
+    console.log("updateSelectedHighlight called with:", element);
+    if (!element) {
+      selectedBox.style.display = "none";
+      selectedLabel.style.display = "none";
+      selectedElement = null;
+      console.log("Cleared selected highlight");
+      return;
+    }
+    selectedElement = element;
+    var rect = element.getBoundingClientRect();
+    console.log("Selected element rect:", rect);
+
+    // 更新选中高亮框位置
+    selectedBox.style.display = "block";
+    selectedBox.style.left = "".concat(rect.left - 2, "px");
+    selectedBox.style.top = "".concat(rect.top - 2, "px");
+    selectedBox.style.width = "".concat(rect.width + 4, "px");
+    selectedBox.style.height = "".concat(rect.height + 4, "px");
+
+    // 更新选中标签位置和内容
+    selectedLabel.style.display = "block";
+    selectedLabel.textContent = "\u2713 <".concat(element.tagName.toLowerCase(), ">");
+
+    // 计算标签位置，确保不超出视窗
+    var labelTop = rect.top - 28;
+    var labelLeft = rect.left;
+
+    // 如果标签会超出顶部，显示在元素下方
+    if (labelTop < 5) {
+      labelTop = rect.bottom + 5;
+    }
+
+    // 如果标签会超出右侧，向左调整
+    var labelWidth = selectedLabel.offsetWidth || 100; // 预估宽度
+    if (labelLeft + labelWidth > window.innerWidth - 10) {
+      labelLeft = window.innerWidth - labelWidth - 10;
+    }
+    selectedLabel.style.left = "".concat(Math.max(5, labelLeft), "px");
+    selectedLabel.style.top = "".concat(labelTop, "px");
+    console.log("Selected highlight positioned at:", {
+      left: selectedBox.style.left,
+      top: selectedBox.style.top,
+      width: selectedBox.style.width,
+      height: selectedBox.style.height
+    });
+  }
+  function getElementSelector(element) {
+    if (!(element instanceof Element)) throw new Error('Argument must be a DOM element');
+    var segments = [];
+    var current = element;
+    while (current !== document.documentElement) {
+      var selector = '';
+      // 优先检查唯一ID
+      if (current.id && document.querySelectorAll("#".concat(current.id)).length === 1) {
+        segments.unshift("#".concat(current.id));
+        break; // ID唯一，无需继续向上
+      }
+
+      // 生成类名选择器（取第一个有效类名）
+      var classes = Array.from(current.classList).filter(function (c) {
+        return !c.startsWith('js-');
+      });
+      var className = classes.length > 0 ? ".".concat(classes[0]) : '';
+
+      // 生成位置索引（nth-child）
+      var tag = current.tagName.toLowerCase();
+      if (!className) {
+        var siblings = Array.from(current.parentNode.children);
+        var index = siblings.findIndex(function (el) {
+          return el === current;
+        }) + 1;
+        selector = "".concat(tag, ":nth-child(").concat(index, ")");
+      } else {
+        selector = className;
+      }
+      segments.unshift(selector);
+      current = current.parentElement;
+    }
+
+    // 处理根元素
+    if (current === document.documentElement) {
+      segments.unshift('html');
+    }
+    return segments.join(' > ');
+  }
+
+  // 获取元素文本内容
+  function getElementText(element) {
+    var _element$textContent;
+    if (element.tagName === "INPUT") {
+      return element.value || element.placeholder || "";
+    }
+    if (element.tagName === "TEXTAREA") {
+      return element.value || element.placeholder || "";
+    }
+    var text = ((_element$textContent = element.textContent) === null || _element$textContent === void 0 ? void 0 : _element$textContent.trim()) || "";
+    return text.length > 50 ? text.substring(0, 50) + "..." : text;
+  }
+
+  // 获取元素属性信息
+  function getElementAttributes(element) {
+    var attrs = {};
+    for (var i = 0; i < element.attributes.length; i++) {
+      var attr = element.attributes[i];
+      attrs[attr.name] = attr.value;
+    }
+    return attrs;
+  }
+
+  // 鼠标悬停事件处理
+  function handleMouseOver(e) {
+    if (!highlightEnabled) return;
+    var target = e.target;
+    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
+      return;
+    }
+
+    // 避免高亮 html 和 body 元素
+    if (target === document.documentElement || target === document.body) {
+      return;
+    }
+
+    // 如果是已选中的元素，不显示悬停高亮
+    if (target === selectedElement) {
+      highlightBox.style.display = "none";
+      tagLabel.style.display = "none";
+      return;
+    }
+    var rect = target.getBoundingClientRect();
+    var selector = getElementSelector(target);
+    var text = getElementText(target);
+    var attributes = getElementAttributes(target);
+
+    // 更新悬停高亮框位置
+    highlightBox.style.display = "block";
+    highlightBox.style.left = "".concat(rect.left - 2, "px");
+    highlightBox.style.top = "".concat(rect.top - 2, "px");
+    highlightBox.style.width = "".concat(rect.width + 4, "px");
+    highlightBox.style.height = "".concat(rect.height + 4, "px");
+
+    // 更新标签位置和内容
+    tagLabel.style.display = "block";
+    tagLabel.textContent = "<".concat(target.tagName.toLowerCase(), ">");
+
+    // 计算标签位置，确保不超出视窗
+    var labelTop = rect.top - 22;
+    var labelLeft = rect.left;
+
+    // 如果标签会超出顶部，显示在元素下方
+    if (labelTop < 0) {
+      labelTop = rect.bottom + 5;
+    }
+
+    // 如果标签会超出右侧，向左调整
+    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
+      labelLeft = window.innerWidth - tagLabel.offsetWidth - 5;
+    }
+    tagLabel.style.left = "".concat(Math.max(0, labelLeft), "px");
+    tagLabel.style.top = "".concat(labelTop, "px");
+
+    // 发送消息到父窗口
+    var elementInfo = {
+      tagName: target.tagName.toLowerCase(),
+      rect: {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        x: rect.x,
+        y: rect.y
+      },
+      selector: selector,
+      text: text,
+      attributes: attributes,
+      url: window.location.href,
+      path: window.location.pathname,
+      timestamp: Date.now()
+    };
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-hover",
+        data: elementInfo,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 鼠标离开事件处理
+  function handleMouseOut(e) {
+    if (!highlightEnabled) return;
+    var relatedTarget = e.relatedTarget;
+
+    // 如果鼠标移动到高亮相关元素上，不隐藏高亮
+    if (relatedTarget && (relatedTarget === highlightBox || relatedTarget === tagLabel || relatedTarget === overlay || relatedTarget === selectedBox || relatedTarget === selectedLabel)) {
+      return;
+    }
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-hover",
+        data: null,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 点击事件处理
+  function handleClick(e) {
+    var target = e.target;
+    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
+      return;
+    }
+
+    // 避免处理 html 和 body 元素
+    if (target === document.documentElement || target === document.body) {
+      return;
+    }
+
+    // 检查是否是交互元素，这些元素需要保留默认行为
+    var isInteractiveElement = ['input', 'textarea', 'select', 'button', 'a'].includes(target.tagName.toLowerCase());
+
+    // 如果高亮功能启用，对于非交互元素阻止默认行为和事件传播
+    if (highlightEnabled) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    var rect = target.getBoundingClientRect();
+    var selector = getElementSelector(target);
+    var text = getElementText(target);
+    var attributes = getElementAttributes(target);
+    console.log("Element clicked:", {
+      tagName: target.tagName,
+      selector: selector,
+      rect: rect
+    });
+
+    // 立即更新选中高亮
+    updateSelectedHighlight(target);
+
+    // 隐藏悬停高亮，因为现在是选中状态
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    var elementInfo = {
+      tagName: target.tagName.toLowerCase(),
+      rect: {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        x: rect.x,
+        y: rect.y
+      },
+      selector: selector,
+      text: text,
+      attributes: attributes,
+      url: window.location.href,
+      path: window.location.pathname,
+      timestamp: Date.now()
+    };
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-click",
+        data: elementInfo,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 监听来自父窗口的消息
+  function handleParentMessage(event) {
+    console.log("Received message from parent:", event.data);
+    if (event.data.type === "iframe-highlight-toggle") {
+      var enabled = event.data.enabled;
+      console.log("Highlight toggle:", enabled);
+      if (enabled) {
+        enableHighlight();
+      } else {
+        disableHighlight();
+      }
+    } else if (event.data.type === "enable-iframe-highlight") {
+      console.log("Enable iframe highlight");
+      enableHighlight();
+    } else if (event.data.type === "disable-iframe-highlight") {
+      console.log("Disable iframe highlight");
+      disableHighlight();
+    } else if (event.data.type === "toggle-iframe-highlight") {
+      var _enabled = event.data.enabled !== undefined ? event.data.enabled : !highlightEnabled;
+      console.log("Toggle iframe highlight to:", _enabled);
+      if (_enabled) {
+        enableHighlight();
+      } else {
+        disableHighlight();
+      }
+    } else if (event.data.type === "update-selected-element") {
+      var selector = event.data.selector;
+      console.log("Update selected element with selector:", selector);
+      if (selector) {
+        try {
+          var element = document.querySelector(selector);
+          console.log("Found element by selector:", element);
+          updateSelectedHighlight(element);
+        } catch (error) {
+          console.warn("Failed to select element:", error);
+          updateSelectedHighlight(null);
+        }
+      } else {
+        updateSelectedHighlight(null);
+      }
+    } else if (event.data.type === "clear-selected-element") {
+      console.log("Clear selected element");
+      updateSelectedHighlight(null);
+    }
+  }
+
+  // 启用高亮功能
+  function enableHighlight() {
+    console.log("Enabling highlight");
+    document.addEventListener("mouseover", handleMouseOver, true);
+    document.addEventListener("mouseout", handleMouseOut, true);
+    document.addEventListener("click", handleClick, true);
+    highlightEnabled = true;
+    overlay.style.display = "block";
+  }
+
+  // 禁用高亮功能
+  function disableHighlight() {
+    console.log("Disabling highlight");
+    highlightEnabled = false;
+    // 保持事件监听器，但通过 highlightEnabled 变量控制行为
+    // 这样可以保留选中状态的显示
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    // 不隐藏 selectedBox 和 selectedLabel，保留选中状态
+  }
+
+  // 完全禁用高亮功能（移除所有监听器）
+  function fullyDisableHighlight() {
+    console.log("Fully disabling highlight");
+    highlightEnabled = false;
+    document.removeEventListener("mouseover", handleMouseOver, true);
+    document.removeEventListener("mouseout", handleMouseOut, true);
+    document.removeEventListener("click", handleClick, true);
+    overlay.style.display = "none";
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    selectedBox.style.display = "none";
+    selectedLabel.style.display = "none";
+  }
+
+  // 添加事件监听
+  enableHighlight();
+  window.addEventListener("message", handleParentMessage);
+
+  // 暴露全局函数供外部调用
+  window.__iframeHighlightControl = {
+    enable: enableHighlight,
+    disable: disableHighlight,
+    fullyDisable: fullyDisableHighlight,
+    isEnabled: function isEnabled() {
+      return highlightEnabled;
+    },
+    getSelectedElement: function getSelectedElement() {
+      return selectedElement;
+    },
+    updateSelected: updateSelectedHighlight,
+    // 通过消息发送开关控制
+    sendToggleMessage: function sendToggleMessage(enabled) {
+      window.parent.postMessage({
+        type: 'iframe-highlight-status',
+        enabled: enabled || highlightEnabled,
+        source: 'iframe-highlight-injector'
+      }, '*');
+    }
+  };
+
+  // 通知父窗口脚本已加载
+  try {
+    window.parent.postMessage({
+      type: "iframe-highlight-ready",
+      data: {
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: Date.now()
+      },
+      source: "iframe-highlight-injector"
+    }, "*");
+  } catch (error) {
+    console.warn("无法发送就绪消息到父窗口:", error);
+  }
+
+  // 清理函数
+  window.__iframeHighlightCleanup = function () {
+    fullyDisableHighlight();
+    window.removeEventListener("message", handleParentMessage);
+    if (overlay.parentElement) {
+      overlay.parentElement.removeChild(overlay);
+    }
+    delete window.__iframeHighlightInitialized;
+    delete window.__iframeHighlightCleanup;
+  };
+})();
+
+</script>
+
+<script>
+/**
+ * Iframe 元素高亮注入脚本
+ * 需要在目标网站中引入此脚本来支持跨域 iframe 高亮功能
+ *
+ * 使用方法：
+ * 1. 将此脚本添加到目标网站的 HTML 中
+ * 2. 或通过浏览器扩展、用户脚本等方式注入
+ */
+
+(function () {
+  "use strict";
+
+  // 检查是否在 iframe 中
+  if (window.self === window.top) {
+    return; // 不在 iframe 中，不执行
+  }
+
+  // 检查是否已经初始化过
+  if (window.__iframeHighlightInitialized) {
+    return;
+  }
+  window.__iframeHighlightInitialized = true;
+  console.log("Iframe 高亮脚本已加载");
+
+  // 创建高亮覆盖层
+  var overlay = document.createElement("div");
+  overlay.id = "iframe-highlight-overlay";
+  overlay.style.cssText = "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
+
+  // 创建悬停高亮框（虚线边框）
+  var highlightBox = document.createElement("div");
+  highlightBox.id = "iframe-highlight-box";
+  highlightBox.style.cssText = "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
+
+  // 创建选中节点的常驻高亮框（实线边框）
+  var selectedBox = document.createElement("div");
+  selectedBox.id = "iframe-selected-box";
+  selectedBox.style.cssText = "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
+
+  // 创建悬停标签显示
+  var tagLabel = document.createElement("div");
+  tagLabel.id = "iframe-tag-label";
+  tagLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
+
+  // 创建选中节点标签
+  var selectedLabel = document.createElement("div");
+  selectedLabel.id = "iframe-selected-label";
+  selectedLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
+  overlay.appendChild(highlightBox);
+  overlay.appendChild(selectedBox);
+  overlay.appendChild(tagLabel);
+  overlay.appendChild(selectedLabel);
+  document.body.appendChild(overlay);
+
+  // 存储当前选中的元素
+  var selectedElement = null;
+  var highlightEnabled = false;
+
+  // 更新选中元素的高亮显示
+  function updateSelectedHighlight(element) {
+    console.log("updateSelectedHighlight called with:", element);
+    if (!element) {
+      selectedBox.style.display = "none";
+      selectedLabel.style.display = "none";
+      selectedElement = null;
+      console.log("Cleared selected highlight");
+      return;
+    }
+    selectedElement = element;
+    var rect = element.getBoundingClientRect();
+    console.log("Selected element rect:", rect);
+
+    // 更新选中高亮框位置
+    selectedBox.style.display = "block";
+    selectedBox.style.left = "".concat(rect.left - 2, "px");
+    selectedBox.style.top = "".concat(rect.top - 2, "px");
+    selectedBox.style.width = "".concat(rect.width + 4, "px");
+    selectedBox.style.height = "".concat(rect.height + 4, "px");
+
+    // 更新选中标签位置和内容
+    selectedLabel.style.display = "block";
+    selectedLabel.textContent = "\u2713 <".concat(element.tagName.toLowerCase(), ">");
+
+    // 计算标签位置，确保不超出视窗
+    var labelTop = rect.top - 28;
+    var labelLeft = rect.left;
+
+    // 如果标签会超出顶部，显示在元素下方
+    if (labelTop < 5) {
+      labelTop = rect.bottom + 5;
+    }
+
+    // 如果标签会超出右侧，向左调整
+    var labelWidth = selectedLabel.offsetWidth || 100; // 预估宽度
+    if (labelLeft + labelWidth > window.innerWidth - 10) {
+      labelLeft = window.innerWidth - labelWidth - 10;
+    }
+    selectedLabel.style.left = "".concat(Math.max(5, labelLeft), "px");
+    selectedLabel.style.top = "".concat(labelTop, "px");
+    console.log("Selected highlight positioned at:", {
+      left: selectedBox.style.left,
+      top: selectedBox.style.top,
+      width: selectedBox.style.width,
+      height: selectedBox.style.height
+    });
+  }
+  function getElementSelector(element) {
+    if (!(element instanceof Element)) throw new Error('Argument must be a DOM element');
+    var segments = [];
+    var current = element;
+    while (current !== document.documentElement) {
+      var selector = '';
+      // 优先检查唯一ID
+      if (current.id && document.querySelectorAll("#".concat(current.id)).length === 1) {
+        segments.unshift("#".concat(current.id));
+        break; // ID唯一，无需继续向上
+      }
+
+      // 生成类名选择器（取第一个有效类名）
+      var classes = Array.from(current.classList).filter(function (c) {
+        return !c.startsWith('js-');
+      });
+      var className = classes.length > 0 ? ".".concat(classes[0]) : '';
+
+      // 生成位置索引（nth-child）
+      var tag = current.tagName.toLowerCase();
+      if (!className) {
+        var siblings = Array.from(current.parentNode.children);
+        var index = siblings.findIndex(function (el) {
+          return el === current;
+        }) + 1;
+        selector = "".concat(tag, ":nth-child(").concat(index, ")");
+      } else {
+        selector = className;
+      }
+      segments.unshift(selector);
+      current = current.parentElement;
+    }
+
+    // 处理根元素
+    if (current === document.documentElement) {
+      segments.unshift('html');
+    }
+    return segments.join(' > ');
+  }
+
+  // 获取元素文本内容
+  function getElementText(element) {
+    var _element$textContent;
+    if (element.tagName === "INPUT") {
+      return element.value || element.placeholder || "";
+    }
+    if (element.tagName === "TEXTAREA") {
+      return element.value || element.placeholder || "";
+    }
+    var text = ((_element$textContent = element.textContent) === null || _element$textContent === void 0 ? void 0 : _element$textContent.trim()) || "";
+    return text.length > 50 ? text.substring(0, 50) + "..." : text;
+  }
+
+  // 获取元素属性信息
+  function getElementAttributes(element) {
+    var attrs = {};
+    for (var i = 0; i < element.attributes.length; i++) {
+      var attr = element.attributes[i];
+      attrs[attr.name] = attr.value;
+    }
+    return attrs;
+  }
+
+  // 鼠标悬停事件处理
+  function handleMouseOver(e) {
+    if (!highlightEnabled) return;
+    var target = e.target;
+    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
+      return;
+    }
+
+    // 避免高亮 html 和 body 元素
+    if (target === document.documentElement || target === document.body) {
+      return;
+    }
+
+    // 如果是已选中的元素，不显示悬停高亮
+    if (target === selectedElement) {
+      highlightBox.style.display = "none";
+      tagLabel.style.display = "none";
+      return;
+    }
+    var rect = target.getBoundingClientRect();
+    var selector = getElementSelector(target);
+    var text = getElementText(target);
+    var attributes = getElementAttributes(target);
+
+    // 更新悬停高亮框位置
+    highlightBox.style.display = "block";
+    highlightBox.style.left = "".concat(rect.left - 2, "px");
+    highlightBox.style.top = "".concat(rect.top - 2, "px");
+    highlightBox.style.width = "".concat(rect.width + 4, "px");
+    highlightBox.style.height = "".concat(rect.height + 4, "px");
+
+    // 更新标签位置和内容
+    tagLabel.style.display = "block";
+    tagLabel.textContent = "<".concat(target.tagName.toLowerCase(), ">");
+
+    // 计算标签位置，确保不超出视窗
+    var labelTop = rect.top - 22;
+    var labelLeft = rect.left;
+
+    // 如果标签会超出顶部，显示在元素下方
+    if (labelTop < 0) {
+      labelTop = rect.bottom + 5;
+    }
+
+    // 如果标签会超出右侧，向左调整
+    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
+      labelLeft = window.innerWidth - tagLabel.offsetWidth - 5;
+    }
+    tagLabel.style.left = "".concat(Math.max(0, labelLeft), "px");
+    tagLabel.style.top = "".concat(labelTop, "px");
+
+    // 发送消息到父窗口
+    var elementInfo = {
+      tagName: target.tagName.toLowerCase(),
+      rect: {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        x: rect.x,
+        y: rect.y
+      },
+      selector: selector,
+      text: text,
+      attributes: attributes,
+      url: window.location.href,
+      path: window.location.pathname,
+      timestamp: Date.now()
+    };
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-hover",
+        data: elementInfo,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 鼠标离开事件处理
+  function handleMouseOut(e) {
+    if (!highlightEnabled) return;
+    var relatedTarget = e.relatedTarget;
+
+    // 如果鼠标移动到高亮相关元素上，不隐藏高亮
+    if (relatedTarget && (relatedTarget === highlightBox || relatedTarget === tagLabel || relatedTarget === overlay || relatedTarget === selectedBox || relatedTarget === selectedLabel)) {
+      return;
+    }
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-hover",
+        data: null,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 点击事件处理
+  function handleClick(e) {
+    var target = e.target;
+    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
+      return;
+    }
+
+    // 避免处理 html 和 body 元素
+    if (target === document.documentElement || target === document.body) {
+      return;
+    }
+
+    // 检查是否是交互元素，这些元素需要保留默认行为
+    var isInteractiveElement = ['input', 'textarea', 'select', 'button', 'a'].includes(target.tagName.toLowerCase());
+
+    // 如果高亮功能启用，对于非交互元素阻止默认行为和事件传播
+    if (highlightEnabled) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    var rect = target.getBoundingClientRect();
+    var selector = getElementSelector(target);
+    var text = getElementText(target);
+    var attributes = getElementAttributes(target);
+    console.log("Element clicked:", {
+      tagName: target.tagName,
+      selector: selector,
+      rect: rect
+    });
+
+    // 立即更新选中高亮
+    updateSelectedHighlight(target);
+
+    // 隐藏悬停高亮，因为现在是选中状态
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    var elementInfo = {
+      tagName: target.tagName.toLowerCase(),
+      rect: {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        x: rect.x,
+        y: rect.y
+      },
+      selector: selector,
+      text: text,
+      attributes: attributes,
+      url: window.location.href,
+      path: window.location.pathname,
+      timestamp: Date.now()
+    };
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-click",
+        data: elementInfo,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 监听来自父窗口的消息
+  function handleParentMessage(event) {
+    console.log("Received message from parent:", event.data);
+    if (event.data.type === "iframe-highlight-toggle") {
+      var enabled = event.data.enabled;
+      console.log("Highlight toggle:", enabled);
+      if (enabled) {
+        enableHighlight();
+      } else {
+        disableHighlight();
+      }
+    } else if (event.data.type === "enable-iframe-highlight") {
+      console.log("Enable iframe highlight");
+      enableHighlight();
+    } else if (event.data.type === "disable-iframe-highlight") {
+      console.log("Disable iframe highlight");
+      disableHighlight();
+    } else if (event.data.type === "toggle-iframe-highlight") {
+      var _enabled = event.data.enabled !== undefined ? event.data.enabled : !highlightEnabled;
+      console.log("Toggle iframe highlight to:", _enabled);
+      if (_enabled) {
+        enableHighlight();
+      } else {
+        disableHighlight();
+      }
+    } else if (event.data.type === "update-selected-element") {
+      var selector = event.data.selector;
+      console.log("Update selected element with selector:", selector);
+      if (selector) {
+        try {
+          var element = document.querySelector(selector);
+          console.log("Found element by selector:", element);
+          updateSelectedHighlight(element);
+        } catch (error) {
+          console.warn("Failed to select element:", error);
+          updateSelectedHighlight(null);
+        }
+      } else {
+        updateSelectedHighlight(null);
+      }
+    } else if (event.data.type === "clear-selected-element") {
+      console.log("Clear selected element");
+      updateSelectedHighlight(null);
+    }
+  }
+
+  // 启用高亮功能
+  function enableHighlight() {
+    console.log("Enabling highlight");
+    document.addEventListener("mouseover", handleMouseOver, true);
+    document.addEventListener("mouseout", handleMouseOut, true);
+    document.addEventListener("click", handleClick, true);
+    highlightEnabled = true;
+    overlay.style.display = "block";
+  }
+
+  // 禁用高亮功能
+  function disableHighlight() {
+    console.log("Disabling highlight");
+    highlightEnabled = false;
+    // 保持事件监听器，但通过 highlightEnabled 变量控制行为
+    // 这样可以保留选中状态的显示
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    // 不隐藏 selectedBox 和 selectedLabel，保留选中状态
+  }
+
+  // 完全禁用高亮功能（移除所有监听器）
+  function fullyDisableHighlight() {
+    console.log("Fully disabling highlight");
+    highlightEnabled = false;
+    document.removeEventListener("mouseover", handleMouseOver, true);
+    document.removeEventListener("mouseout", handleMouseOut, true);
+    document.removeEventListener("click", handleClick, true);
+    overlay.style.display = "none";
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    selectedBox.style.display = "none";
+    selectedLabel.style.display = "none";
+  }
+
+  // 添加事件监听
+  enableHighlight();
+  window.addEventListener("message", handleParentMessage);
+
+  // 暴露全局函数供外部调用
+  window.__iframeHighlightControl = {
+    enable: enableHighlight,
+    disable: disableHighlight,
+    fullyDisable: fullyDisableHighlight,
+    isEnabled: function isEnabled() {
+      return highlightEnabled;
+    },
+    getSelectedElement: function getSelectedElement() {
+      return selectedElement;
+    },
+    updateSelected: updateSelectedHighlight,
+    // 通过消息发送开关控制
+    sendToggleMessage: function sendToggleMessage(enabled) {
+      window.parent.postMessage({
+        type: 'iframe-highlight-status',
+        enabled: enabled || highlightEnabled,
+        source: 'iframe-highlight-injector'
+      }, '*');
+    }
+  };
+
+  // 通知父窗口脚本已加载
+  try {
+    window.parent.postMessage({
+      type: "iframe-highlight-ready",
+      data: {
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: Date.now()
+      },
+      source: "iframe-highlight-injector"
+    }, "*");
+  } catch (error) {
+    console.warn("无法发送就绪消息到父窗口:", error);
+  }
+
+  // 清理函数
+  window.__iframeHighlightCleanup = function () {
+    fullyDisableHighlight();
+    window.removeEventListener("message", handleParentMessage);
+    if (overlay.parentElement) {
+      overlay.parentElement.removeChild(overlay);
+    }
+    delete window.__iframeHighlightInitialized;
+    delete window.__iframeHighlightCleanup;
+  };
+})();
+
+</script>
+
+<script>
+/**
+ * Iframe 元素高亮注入脚本
+ * 需要在目标网站中引入此脚本来支持跨域 iframe 高亮功能
+ *
+ * 使用方法：
+ * 1. 将此脚本添加到目标网站的 HTML 中
+ * 2. 或通过浏览器扩展、用户脚本等方式注入
+ */
+
+(function () {
+  "use strict";
+
+  // 检查是否在 iframe 中
+  if (window.self === window.top) {
+    return; // 不在 iframe 中，不执行
+  }
+
+  // 检查是否已经初始化过
+  if (window.__iframeHighlightInitialized) {
+    return;
+  }
+  window.__iframeHighlightInitialized = true;
+  console.log("Iframe 高亮脚本已加载");
+
+  // 创建高亮覆盖层
+  var overlay = document.createElement("div");
+  overlay.id = "iframe-highlight-overlay";
+  overlay.style.cssText = "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
+
+  // 创建悬停高亮框（虚线边框）
+  var highlightBox = document.createElement("div");
+  highlightBox.id = "iframe-highlight-box";
+  highlightBox.style.cssText = "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
+
+  // 创建选中节点的常驻高亮框（实线边框）
+  var selectedBox = document.createElement("div");
+  selectedBox.id = "iframe-selected-box";
+  selectedBox.style.cssText = "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
+
+  // 创建悬停标签显示
+  var tagLabel = document.createElement("div");
+  tagLabel.id = "iframe-tag-label";
+  tagLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
+
+  // 创建选中节点标签
+  var selectedLabel = document.createElement("div");
+  selectedLabel.id = "iframe-selected-label";
+  selectedLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
+  overlay.appendChild(highlightBox);
+  overlay.appendChild(selectedBox);
+  overlay.appendChild(tagLabel);
+  overlay.appendChild(selectedLabel);
+  document.body.appendChild(overlay);
+
+  // 存储当前选中的元素
+  var selectedElement = null;
+  var highlightEnabled = false;
+
+  // 更新选中元素的高亮显示
+  function updateSelectedHighlight(element) {
+    console.log("updateSelectedHighlight called with:", element);
+    if (!element) {
+      selectedBox.style.display = "none";
+      selectedLabel.style.display = "none";
+      selectedElement = null;
+      console.log("Cleared selected highlight");
+      return;
+    }
+    selectedElement = element;
+    var rect = element.getBoundingClientRect();
+    console.log("Selected element rect:", rect);
+
+    // 更新选中高亮框位置
+    selectedBox.style.display = "block";
+    selectedBox.style.left = "".concat(rect.left - 2, "px");
+    selectedBox.style.top = "".concat(rect.top - 2, "px");
+    selectedBox.style.width = "".concat(rect.width + 4, "px");
+    selectedBox.style.height = "".concat(rect.height + 4, "px");
+
+    // 更新选中标签位置和内容
+    selectedLabel.style.display = "block";
+    selectedLabel.textContent = "\u2713 <".concat(element.tagName.toLowerCase(), ">");
+
+    // 计算标签位置，确保不超出视窗
+    var labelTop = rect.top - 28;
+    var labelLeft = rect.left;
+
+    // 如果标签会超出顶部，显示在元素下方
+    if (labelTop < 5) {
+      labelTop = rect.bottom + 5;
+    }
+
+    // 如果标签会超出右侧，向左调整
+    var labelWidth = selectedLabel.offsetWidth || 100; // 预估宽度
+    if (labelLeft + labelWidth > window.innerWidth - 10) {
+      labelLeft = window.innerWidth - labelWidth - 10;
+    }
+    selectedLabel.style.left = "".concat(Math.max(5, labelLeft), "px");
+    selectedLabel.style.top = "".concat(labelTop, "px");
+    console.log("Selected highlight positioned at:", {
+      left: selectedBox.style.left,
+      top: selectedBox.style.top,
+      width: selectedBox.style.width,
+      height: selectedBox.style.height
+    });
+  }
+  function getElementSelector(element) {
+    if (!(element instanceof Element)) throw new Error('Argument must be a DOM element');
+    var segments = [];
+    var current = element;
+    while (current !== document.documentElement) {
+      var selector = '';
+      // 优先检查唯一ID
+      if (current.id && document.querySelectorAll("#".concat(current.id)).length === 1) {
+        segments.unshift("#".concat(current.id));
+        break; // ID唯一，无需继续向上
+      }
+
+      // 生成类名选择器（取第一个有效类名）
+      var classes = Array.from(current.classList).filter(function (c) {
+        return !c.startsWith('js-');
+      });
+      var className = classes.length > 0 ? ".".concat(classes[0]) : '';
+
+      // 生成位置索引（nth-child）
+      var tag = current.tagName.toLowerCase();
+      if (!className) {
+        var siblings = Array.from(current.parentNode.children);
+        var index = siblings.findIndex(function (el) {
+          return el === current;
+        }) + 1;
+        selector = "".concat(tag, ":nth-child(").concat(index, ")");
+      } else {
+        selector = className;
+      }
+      segments.unshift(selector);
+      current = current.parentElement;
+    }
+
+    // 处理根元素
+    if (current === document.documentElement) {
+      segments.unshift('html');
+    }
+    return segments.join(' > ');
+  }
+
+  // 获取元素文本内容
+  function getElementText(element) {
+    var _element$textContent;
+    if (element.tagName === "INPUT") {
+      return element.value || element.placeholder || "";
+    }
+    if (element.tagName === "TEXTAREA") {
+      return element.value || element.placeholder || "";
+    }
+    var text = ((_element$textContent = element.textContent) === null || _element$textContent === void 0 ? void 0 : _element$textContent.trim()) || "";
+    return text.length > 50 ? text.substring(0, 50) + "..." : text;
+  }
+
+  // 获取元素属性信息
+  function getElementAttributes(element) {
+    var attrs = {};
+    for (var i = 0; i < element.attributes.length; i++) {
+      var attr = element.attributes[i];
+      attrs[attr.name] = attr.value;
+    }
+    return attrs;
+  }
+
+  // 鼠标悬停事件处理
+  function handleMouseOver(e) {
+    if (!highlightEnabled) return;
+    var target = e.target;
+    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
+      return;
+    }
+
+    // 避免高亮 html 和 body 元素
+    if (target === document.documentElement || target === document.body) {
+      return;
+    }
+
+    // 如果是已选中的元素，不显示悬停高亮
+    if (target === selectedElement) {
+      highlightBox.style.display = "none";
+      tagLabel.style.display = "none";
+      return;
+    }
+    var rect = target.getBoundingClientRect();
+    var selector = getElementSelector(target);
+    var text = getElementText(target);
+    var attributes = getElementAttributes(target);
+
+    // 更新悬停高亮框位置
+    highlightBox.style.display = "block";
+    highlightBox.style.left = "".concat(rect.left - 2, "px");
+    highlightBox.style.top = "".concat(rect.top - 2, "px");
+    highlightBox.style.width = "".concat(rect.width + 4, "px");
+    highlightBox.style.height = "".concat(rect.height + 4, "px");
+
+    // 更新标签位置和内容
+    tagLabel.style.display = "block";
+    tagLabel.textContent = "<".concat(target.tagName.toLowerCase(), ">");
+
+    // 计算标签位置，确保不超出视窗
+    var labelTop = rect.top - 22;
+    var labelLeft = rect.left;
+
+    // 如果标签会超出顶部，显示在元素下方
+    if (labelTop < 0) {
+      labelTop = rect.bottom + 5;
+    }
+
+    // 如果标签会超出右侧，向左调整
+    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
+      labelLeft = window.innerWidth - tagLabel.offsetWidth - 5;
+    }
+    tagLabel.style.left = "".concat(Math.max(0, labelLeft), "px");
+    tagLabel.style.top = "".concat(labelTop, "px");
+
+    // 发送消息到父窗口
+    var elementInfo = {
+      tagName: target.tagName.toLowerCase(),
+      rect: {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        x: rect.x,
+        y: rect.y
+      },
+      selector: selector,
+      text: text,
+      attributes: attributes,
+      url: window.location.href,
+      path: window.location.pathname,
+      timestamp: Date.now()
+    };
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-hover",
+        data: elementInfo,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 鼠标离开事件处理
+  function handleMouseOut(e) {
+    if (!highlightEnabled) return;
+    var relatedTarget = e.relatedTarget;
+
+    // 如果鼠标移动到高亮相关元素上，不隐藏高亮
+    if (relatedTarget && (relatedTarget === highlightBox || relatedTarget === tagLabel || relatedTarget === overlay || relatedTarget === selectedBox || relatedTarget === selectedLabel)) {
+      return;
+    }
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-hover",
+        data: null,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 点击事件处理
+  function handleClick(e) {
+    var target = e.target;
+    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
+      return;
+    }
+
+    // 避免处理 html 和 body 元素
+    if (target === document.documentElement || target === document.body) {
+      return;
+    }
+
+    // 检查是否是交互元素，这些元素需要保留默认行为
+    var isInteractiveElement = ['input', 'textarea', 'select', 'button', 'a'].includes(target.tagName.toLowerCase());
+
+    // 如果高亮功能启用，对于非交互元素阻止默认行为和事件传播
+    if (highlightEnabled) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    var rect = target.getBoundingClientRect();
+    var selector = getElementSelector(target);
+    var text = getElementText(target);
+    var attributes = getElementAttributes(target);
+    console.log("Element clicked:", {
+      tagName: target.tagName,
+      selector: selector,
+      rect: rect
+    });
+
+    // 立即更新选中高亮
+    updateSelectedHighlight(target);
+
+    // 隐藏悬停高亮，因为现在是选中状态
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    var elementInfo = {
+      tagName: target.tagName.toLowerCase(),
+      rect: {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        x: rect.x,
+        y: rect.y
+      },
+      selector: selector,
+      text: text,
+      attributes: attributes,
+      url: window.location.href,
+      path: window.location.pathname,
+      timestamp: Date.now()
+    };
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-click",
+        data: elementInfo,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 监听来自父窗口的消息
+  function handleParentMessage(event) {
+    console.log("Received message from parent:", event.data);
+    if (event.data.type === "iframe-highlight-toggle") {
+      var enabled = event.data.enabled;
+      console.log("Highlight toggle:", enabled);
+      if (enabled) {
+        enableHighlight();
+      } else {
+        disableHighlight();
+      }
+    } else if (event.data.type === "enable-iframe-highlight") {
+      console.log("Enable iframe highlight");
+      enableHighlight();
+    } else if (event.data.type === "disable-iframe-highlight") {
+      console.log("Disable iframe highlight");
+      disableHighlight();
+    } else if (event.data.type === "toggle-iframe-highlight") {
+      var _enabled = event.data.enabled !== undefined ? event.data.enabled : !highlightEnabled;
+      console.log("Toggle iframe highlight to:", _enabled);
+      if (_enabled) {
+        enableHighlight();
+      } else {
+        disableHighlight();
+      }
+    } else if (event.data.type === "update-selected-element") {
+      var selector = event.data.selector;
+      console.log("Update selected element with selector:", selector);
+      if (selector) {
+        try {
+          var element = document.querySelector(selector);
+          console.log("Found element by selector:", element);
+          updateSelectedHighlight(element);
+        } catch (error) {
+          console.warn("Failed to select element:", error);
+          updateSelectedHighlight(null);
+        }
+      } else {
+        updateSelectedHighlight(null);
+      }
+    } else if (event.data.type === "clear-selected-element") {
+      console.log("Clear selected element");
+      updateSelectedHighlight(null);
+    }
+  }
+
+  // 启用高亮功能
+  function enableHighlight() {
+    console.log("Enabling highlight");
+    document.addEventListener("mouseover", handleMouseOver, true);
+    document.addEventListener("mouseout", handleMouseOut, true);
+    document.addEventListener("click", handleClick, true);
+    highlightEnabled = true;
+    overlay.style.display = "block";
+  }
+
+  // 禁用高亮功能
+  function disableHighlight() {
+    console.log("Disabling highlight");
+    highlightEnabled = false;
+    // 保持事件监听器，但通过 highlightEnabled 变量控制行为
+    // 这样可以保留选中状态的显示
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    // 不隐藏 selectedBox 和 selectedLabel，保留选中状态
+  }
+
+  // 完全禁用高亮功能（移除所有监听器）
+  function fullyDisableHighlight() {
+    console.log("Fully disabling highlight");
+    highlightEnabled = false;
+    document.removeEventListener("mouseover", handleMouseOver, true);
+    document.removeEventListener("mouseout", handleMouseOut, true);
+    document.removeEventListener("click", handleClick, true);
+    overlay.style.display = "none";
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    selectedBox.style.display = "none";
+    selectedLabel.style.display = "none";
+  }
+
+  // 添加事件监听
+  enableHighlight();
+  window.addEventListener("message", handleParentMessage);
+
+  // 暴露全局函数供外部调用
+  window.__iframeHighlightControl = {
+    enable: enableHighlight,
+    disable: disableHighlight,
+    fullyDisable: fullyDisableHighlight,
+    isEnabled: function isEnabled() {
+      return highlightEnabled;
+    },
+    getSelectedElement: function getSelectedElement() {
+      return selectedElement;
+    },
+    updateSelected: updateSelectedHighlight,
+    // 通过消息发送开关控制
+    sendToggleMessage: function sendToggleMessage(enabled) {
+      window.parent.postMessage({
+        type: 'iframe-highlight-status',
+        enabled: enabled || highlightEnabled,
+        source: 'iframe-highlight-injector'
+      }, '*');
+    }
+  };
+
+  // 通知父窗口脚本已加载
+  try {
+    window.parent.postMessage({
+      type: "iframe-highlight-ready",
+      data: {
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: Date.now()
+      },
+      source: "iframe-highlight-injector"
+    }, "*");
+  } catch (error) {
+    console.warn("无法发送就绪消息到父窗口:", error);
+  }
+
+  // 清理函数
+  window.__iframeHighlightCleanup = function () {
+    fullyDisableHighlight();
+    window.removeEventListener("message", handleParentMessage);
+    if (overlay.parentElement) {
+      overlay.parentElement.removeChild(overlay);
+    }
+    delete window.__iframeHighlightInitialized;
+    delete window.__iframeHighlightCleanup;
+  };
+})();
+
+</script>
+</body>
+</html>
