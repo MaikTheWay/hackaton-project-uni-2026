@@ -50,6 +50,47 @@
             z-index: 0;
         }
 
+        /* Code Rain Background */
+        .code-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .code-rain-char {
+            position: absolute;
+            font-family: 'Courier Prime', monospace;
+            font-size: 1.1rem;
+            color: #00ff41;
+            text-shadow: 0 0 8px rgba(0, 255, 65, 0.8);
+            opacity: 0;
+            animation: fall linear infinite;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-20vh);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
         /* Scanline effect */
         body::after {
             content: '';
@@ -76,7 +117,7 @@
             margin: 0 auto;
             padding: 40px 20px;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
         /* Header */
@@ -210,11 +251,6 @@
             letter-spacing: 1px;
         }
 
-        .mission-points {
-            color: var(--warning);
-            font-family: 'Share Tech Mono', monospace;
-        }
-
         .mission-difficulty {
             font-size: 0.75rem;
             padding: 2px 8px;
@@ -321,6 +357,7 @@
     </style>
 </head>
 <body>
+    <div class="code-rain" id="codeRain"></div>
     <div class="container">
         <header class="header">
             <div class="classified-stamp">DOCUMENTO CLASSIFICADO</div>
@@ -348,6 +385,7 @@
         <footer class="footer">
             <p>Operation a cobra vai fumar © 2026 | Hackathon Unimetrocamp</p>
             <p style="margin-top: 8px;">Desenvolvido por computeiros para computeiros</p>
+            <p style="margin-top: 8px;">Créditos: Marcos A. R. Cussiili e Lucas</p>
         </footer>
     </div>
 
@@ -359,353 +397,147 @@
                 id: 1,
                 title: "RSA SIMPLIFICADO",
                 subtitle: "Introdução à Criptografia Assimétrica",
-                points: 1000,
                 difficulty: "Básico",
-                narrative: `Bem-vindo, agente! Esta e a sua primeira missão na operação "A COBRA VAI FUMAR".
-Recebemos informacões de que o Sindicato está começando a usar criptografia moderna
-em suas comunicações. Para comecar, vamos entender o basico da criptografia de chave publica.
-
-O algoritmo RSA é considerado o padrão-ouro da criptografia assimétrica e usa conceitos
-de aritmetica modular com numeros primos. Nesta missão inicial, voce vai implementar
-uma versao simplificada para entender os conceitos fundamentais.`,
-                mission: `Sua missao e implementar o algoritmo RSA SIMPLIFICADO para criptografar e descriptografar mensagens.`,
-                inputs: `
-ENTRADA:
-- Mensagem (M): string de texto
-- Primo p: numero primo
-- Primo q: numero primo
-- Chave publica e: numero inteiro coprimo com phi
-- Modo: "criptografar" ou "descriptografar"`,
-
-                rules: `
-REGRAS OBRIGATORIAS:
-> Converter texto para numeros usando Tabela ASCII (A=65, B=66, etc.)
-> Manter espacos em branco no texto
-> Tratar letras maiusculas e minusculas corretamente
-> Validar que p e q sao numeros primos
-> Validar que e e phi sao coprimos (MDC = 1)
-> Implementar tratamento de erros para entradas invalidas`,
-
-                interface: `
-INTERFACE SUGERIDA:
-Para esta missao inicial, a interface pode ser simples:
-
-1. Campo de entrada para a mensagem
-2. Campos para p, q, e
-3. Botao para criptografar e descriptografar
-4. Exibicao dos calculos intermediarios (n, phi, d)
-5. Area de resultado formatada`
+                narrative: `Bem-vindo, agente! Esta é a sua primeira missão na operação "A COBRA VAI FUMAR".
+	Recebemos informações de que o Sindicato está começando a usar criptografia moderna
+	em suas comunicações. Para começar, vamos entender o básico da criptografia de chave pública.
+	
+	O algoritmo RSA é considerado o padrão-ouro da criptografia assimétrica e usa conceitos
+	de aritmética modular com números primos. Nesta missão inicial, você vai implementar
+	uma versão simplificada para entender os conceitos fundamentais.`,
+	                mission: `Sua missão é implementar o algoritmo RSA SIMPLIFICADO para criptografar e descriptografar mensagens.`,
+	                inputs: `
+	ENTRADA:
+	- Mensagem (M): string de texto
+	- Primo p: número primo
+	- Primo q: número primo
+	- Chave pública e: número inteiro coprimo com phi
+	- Modo: "criptografar" ou "descriptografar"`,
+	
+	                rules: `
+	REGRAS OBRIGATÓRIAS:
+	> Converter texto para números usando Tabela ASCII (A=65, B=66, etc.)
+	> Manter espaços em branco no texto
+	> Tratar letras maiúsculas e minúsculas corretamente
+	> Validar que p e q são números primos
+	> Validar que e e phi são coprimos (MDC = 1)
+	> Implementar tratamento de erros para entradas inválidas`,
+	
+	                interface: `
+	INTERFACE SUGERIDA:
+	Para esta missão inicial, a interface pode ser simples:
+	
+	1. Campo de entrada para a mensagem
+	2. Campos para p, q, e
+	3. Botão para criptografar e descriptografar
+	4. Exibição dos cálculos intermediários (n, phi, d)
+	5. Área de resultado formatada`
             },
             2: {
                 id: 2,
-                title: "SISTEMA DE DETECÇÃO DE PADRÕES",
-                subtitle: "Algoritmos de Pattern Matching e Análise",
-                points: 1000,
+                title: "CIFRA DE VIGENÈRE",
+                subtitle: "Criptografia Polialfabética Clássica",
                 difficulty: "Intermediário",
                 narrative: `Excelente trabalho com o RSA! Agora temos um novo desafio.
-O Sindicato esta transmitindo mensagens codificadas de forma incomum.
-Nossas analises revelaram que as mensagens contem PADROES REPETITIVOS
-que podem ser explorados para decifrar o codigo.
-Sua missao e implementar um sistema de DETECCAO DE PADROES que possa:
-- Identificar sequencias repetidas em qualquer texto
-- Encontrar o maior prefixo/sufixo comum
-- Detectar anagramas e palindromos
-- Calcular a distancia de Hamming entre strings
-- Implementar o algoritmo de Knuth-Morris-Pratt (KMP) para busca de padrao
-Preparese: esta missao exige logica afiada e eficiencia algoritmica!`,
-                mission: `Implemente um SISTEMA DE DETECCAO DE PADROES com as seguintes funcionalidades:
-
-1. MAIOR PREFIXO COMUM (Longest Common Prefix - LCP)
-   - Encontrar o maior prefixo comum entre N strings
-   - Entrada: Lista de strings separadas por pipe "|"
-   - Saida: O prefixo comum mais longo
-
-2. MAIOR SUFIXO COMUM (Longest Common Suffix - LCS)
-   - Encontrar o maior sufixo comum entre N strings
-   - Mesma entrada/saida do LCP
-
-3. ANAGRAMA OU NAO
-   - Verificar se duas strings sao anagramas
-   - Entrada: duas strings separadas por pipe
-   - Saida: "SIM" ou "NAO"
-
-4. E PALINDROMO
-   - Verificar se uma string e palindromo (ignorar espacos e pontuacao)
-   - Entrada: uma string
-   - Saida: "SIM" ou "NAO"
-
-5. DISTANCIA DE HAMMING
-   - Calcular o numero de posicoes diferentes entre duas strings de mesmo tamanho
-   - Entrada: duas strings separadas por pipe
-   - Saida: numero inteiro
-
-6. BUSCA KMP (Knuth-Morris-Pratt)
-   - Implementar busca de padrao usando o algoritmo KMP
-   - Entrada: texto|padrao (separados por pipe)
-   - Saida: posicoes onde o padrao ocorre (0-indexed)
-
-7. SEQUENCIA FIBONACCI IDENTIFICADA
-   - Verificar se uma sequencia de numeros segue Fibonacci
-   - Entrada: numeros separados por espacos
-   - Saida: "SIM" ou "NAO"
-
-8. SUBSEQUENCIA CRESCENTE MAXIMA
-   - Encontrar a maior subsequencia crescente em uma sequencia
-   - Entrada: numeros separados por espacos
-   - Saida: a subsequencia em ordem` ,
-                inputs: `
-ENTRADA:
-Cada comando recebe parametros separados por pipe "|" ou espacos:
-
-COMANDO 1: lcp <str1>|<str2>|...|<strN>
-EXEMPLO: lcp "formula1|formula2|formula3"
-SAIDA: "formula"
-
-COMANDO 2: lcs <str1>|<str2>|...|<strN>
-EXEMPLO: lcs "samba|maramba"
-SAIDA: "amba"
-
-COMANDO 3: anagrama <str1>|<str2>
-EXEMPLO: anagrama "listen|silent"
-SAIDA: "SIM"
-
-COMANDO 4: palindromo <texto>
-EXEMPLO: palindromo "A base do teto desata"
-SAIDA: "SIM"
-
-COMANDO 5: hamming <str1>|<str2>
-EXEMPLO: hamming "karolin|kathrin"
-SAIDA: 3
-
-COMANDO 6: kmp <texto>|<padrao>
-EXEMPLO: kmp "ABABDABACDABABCABAB|ABAB"
-SAIDA: [0, 10, 15]
-
-COMANDO 7: fibonacci <n1> <n2> ... <nN>
-EXEMPLO: fibonacci 1 1 2 3 5 8 13
-SAIDA: "SIM"
-
-COMANDO 8: lcs_increasing <n1> <n2> ... <nN>
-EXEMPLO: lcs_increasing 10 22 9 33 41 60 80
-SAIDA: 10 22 33 41 60 80`,
-                rules: `
-REGRAS OBRIGATORIAS:
-> Implementar TODOS os 8 algoritmos listados acima
-> Tratar entradas invalidas com mensagens de erro claras
-> LCP/LCS devem funcionar com qualquer quantidade de strings
-> Palindromo deve ignorar espacos, pontuacao e ser case-insensitive
-> Hamming ONLY funciona com strings de mesmo tamanho (erro se diferente)
-> KMP deve calcular a tabela de prefixo (Failure Function) corretamente
-> Fibonacci deve verificar TODA a sequencia (nao apenas se e Fibonacci)
-> LCS Increasing deve retornar a subsequencia em ordem original
-> Complexidade de KMP deve ser O(n+m) onde n=texto e m=padrao
-> Tratar strings vazias, espacos em excesso e entrada mal formatada
-> MANEIRA EFICIENTE: usar programacao dinamica para LCS
-> Validacao ROBUSTA de entrada em todos os algoritmos`,
-                interface: `
-INTERFACE SUGERIDA:
-Interface de teste para os analistas:
-
-1. Menu lateral com todos os 8 algoritmos
-2. Campo de entrada dinamico baseado no algoritmo selecionado
-3. Visualizacao do resultado e dos passos intermediarios
-4. Botao para ver o algoritmo funcionando passo a passo
-5. Area de DEBUG mostrando calculos internos
-6. Botao de copiar resultado
-7. Modo de teste automatico com casos de uso
-
-PARA KMP: Mostrar a tabela de prefixo computada
-PARA LCS_INCREASING: Mostrar a matriz DP se necessario`
+	O Sindicato está usando uma cifra clássica porém poderosa para proteger
+	suas comunicações de campo. Interceptamos mensagens que aparentam usar
+	substituição polialfabética — um método historicamente resistente à análise
+	de frequência simples.
+	Sua missão é implementar a CIFRA DE VIGENÈRE completa, capaz de
+	criptografar e descriptografar qualquer mensagem usando uma chave secreta.`,
+	                mission: `Sua missão é implementar a CIFRA DE VIGENÈRE para criptografar e descriptografar mensagens.
+	
+	A cifra de Vigenère é uma extensão da Cifra de César: em vez de deslocar todas
+	as letras pelo mesmo valor, cada letra é deslocada pelo valor da letra
+	correspondente na chave (repetida ciclicamente).
+	
+	FÓRMULA:
+	- Criptografar: C[i] = (M[i] + K[i]) mod 26
+	- Descriptografar: M[i] = (C[i] - K[i] + 26) mod 26
+	
+	Onde M[i] é a posição da letra da mensagem (A=0, B=1, ..., Z=25),
+	K[i] é a posição da letra da chave (repetida ciclicamente) e
+	C[i] é a posição da letra cifrada.`,
+	                inputs: `
+	ENTRADA:
+	- Mensagem (M): string de texto (letras e espaços)
+	- Chave (K): string apenas com letras (sem espaços)
+	- Modo: "criptografar" ou "descriptografar"
+	
+	EXEMPLO — CRIPTOGRAFAR:
+	Mensagem: ATACAR BASE NORTE
+	Chave: COBRA
+	Saída: CVCEET DSSE PGVXE
+	
+	EXEMPLO — DESCRIPTOGRAFAR:
+	Mensagem: CVCEET DSSE PGVXE
+	Chave: COBRA
+	Saída: ATACAR BASE NORTE`,
+	                rules: `
+	REGRAS OBRIGATÓRIAS:
+	> Tratar letras maiúsculas e minúsculas (converter para maiúsculas internamente)
+	> Espaços e pontuação devem ser mantidos no resultado SEM cifrar
+	> A chave deve ser repetida ciclicamente apenas sobre as letras (ignorar espaços)
+	> Validar que a chave contém apenas letras (erro se conter números ou símbolos)
+	> Exibir os cálculos intermediários: chave expandida, deslocamentos aplicados
+	> Mostrar a tabela de Vigenère (quadrado de Vigenère) na interface`,
+	                interface: `
+	INTERFACE SUGERIDA:
+	Interface simples e direta para os agentes de campo:
+	
+	1. Campo de entrada para a mensagem
+	2. Campo para a chave secreta
+	3. Botões para criptografar e descriptografar
+	4. Exibição da chave expandida (repetida para cobrir a mensagem)
+	5. Tabela mostrando letra original → deslocamento → letra cifrada
+	6. Área de resultado formatada e destacada`
             },
             3: {
                 id: 3,
-                title: "OTIMIZADOR DE ROTEIROS",
-                subtitle: "Grafos, Programação Dinâmica e Backtracking",
-                points: 1000,
+                title: "ESCADA DE ASSALTO",
+                subtitle: "Cálculo de Inclinação Máxima por Peso do Soldado",
                 difficulty: "Avançado",
-                narrative: `INCRIVEL! Voce destruiu todos os desafios anteriores!
-Mas prepare-se: esta e a missao FINAL e a mais desafiadora de todas.
-Interceptamos informacoes sobre a rede de contato do Sindicato.
-Precisamos encontrar a MELHOR ROTA para nossas equipes de campo.
-O problema envolve otimizacao combinatoria extrema:
-- Grafo com ate 50 vertices e 200 arestas
-- Múltiplos pontos de partida e chegada
-- Restricoes de tempo e recursos
-- Escolhas que afetam escolhas futuras
-Isso combina grafos, programacao dinamica e backtracking em um unico desafio!
-Esta e a sua chance de demostrar que e um VERDADEIRO MESTRE DA LOGICA!`,
-                mission: `Implemente um OTIMIZADOR DE ROTEIROS com as seguintes funcionalidades:
-
-1. ALGORITMO DE DIJKSTRA
-   - Encontrar o caminho mais curto entre dois vertices em um grafo ponderado
-   - Entrada: matriz de adjacencia seguida de vertice inicial e final
-   - Saida: distancia minima e o caminho
-
-2. PERCURSO EM PROFUNDIDADE (DFS)
-   - Implementar DFS iterativo E recursivo
-   - Entrada: lista de adjacencia e vertice inicial
-   - Saida: ordem de visitacao dos vertices
-
-3. ORDENACAO TOPOLOGICA
-   - Ordenar vertices de um DAG (grafo directed acyclic) em ordem topologica
-   - Entrada: lista de adjacencia do grafo direcionado
-   - Saida: ordem topologica dos vertices
-
-4. PROBLEMA DO CAIXEIRO VIAJANTE (TSP) - versao simples
-   - Encontrar o menor caminho que visita todos os vertices exatamente uma vez
-   - Usar forca bruta para grafos de ate 10 vertices
-   - Entrada: matriz de adjacencia
-   - Saida: custo minimo e vertices na ordem do percurso
-
-5. MAIOR CAMINHO EM DAG
-   - Encontrar o caminho maximo em um DAG ponderado
-   - Usar programacao dinamica (top-down com memoization)
-   - Entrada: grafo direcionado aciclico ponderado
-   - Saida: maior caminho e seu peso
-
-6. SUBSET SUM
-   - Determinar se existe subconjunto que soma a um valor target
-   - Usar programacao dinamica
-   - Entrada: lista de numeros e target
-   - Saida: "SIM" + o subconjunto ou "NAO"
-
-7. MOCHILA 0/1
-   - Resolver o problema da mochila com programacao dinamica
-   - Entrada: capacidades, pesos e valores de N itens
-   - Saida: valor maximo e itens selecionados
-
-8. SUDOKU SOLVER
-   - Resolver qualquer Sudoku 9x9 valido
-   - Usar backtracking com pruning de dominios
-   - Entrada: 81 numeros (0 para espacos vazios)
-   - Saida: tabuleiro resolvido ou "SEM SOLUCAO"
-
-9. QUEBRADOR DE SENHA
-   - Implementar gerador de combinacoes para forca bruta
-   - Testar palavras de um dicionario
-   - Entrada: hash a quebrar + tipo de hash (simulado) + lista de palavras
-   - Saida: palavra encontrada ou "NAO ENCONTRADA"` ,
-                inputs: `
-ENTRADA:
-Cada comando recebe parametros no seguinte formato:
-
-COMANDO 1: dijkstra
-ENTRADA:
-4              (numero de vertices)
-0 5 99 99      (matriz: 99 = sem aresta)
-5 0 3 7
-99 3 0 2
-99 7 2 0
-0 3           (vertice inicial e final)
-SAIDA: distancia=10, caminho=[0,1,2,3]
-
-COMANDO 2: dfs
-ENTRADA:
-5              (vertices)
-0 1 1 0 0      (adjacencias)
-1 0 0 1 0
-1 0 0 1 1
-0 1 1 0 1
-0 0 1 1 0
-0              (vertice inicial)
-SAIDA: 0 1 3 2 4
-
-COMANDO 3: topsort
-ENTRADA:
-6
-0 1 0 0 0 0
-0 0 1 0 0 0
-0 0 0 1 0 0
-0 0 0 0 1 0
-0 0 0 0 0 1
-0 0 0 0 0 0
-SAIDA: 0 1 2 3 4 5
-
-COMANDO 4: tsp
-ENTRADA:
-4
-0 10 15 20
-10 0 35 25
-15 35 0 30
-20 25 30 0
-SAIDA: custo=95, rota=[0,1,3,2]
-
-COMANDO 5: dag_path
-ENTRADA:
-6
-0 5 99 99 99 99
-99 0 99 99 99 99
-99 99 0 99 99 99
-99 99 2 0 99 99
-99 3 4 99 0 99
-99 99 99 99 1 0
-SAIDA: caminho=[0,4,1], peso=8
-
-COMANDO 6: subset_sum
-ENTRADA:
-3 15           (N=3, target=15)
-5 3 11 2
-SAIDA: SIM [5,3,2] ou [11,2]
-
-COMANDO 7: knapsack
-ENTRADA:
-4 10            (N=4, capacidade=10)
-valor: 1 2 3 4
-peso:  2 3 4 5
-SAIDA: max=4, itens=[1,2]
-
-COMANDO 8: sudoku
-ENTRADA:
-5 3 0 0 7 0 0 0 0
-6 0 0 1 9 5 0 0 0
-0 9 8 0 0 0 0 6 0
-8 0 0 0 6 0 0 0 3
-4 0 0 8 0 3 0 0 1
-7 0 0 0 2 0 0 0 6
-0 6 0 0 0 0 2 8 0
-0 0 0 4 1 9 0 0 5
-0 0 0 0 8 0 0 7 9
-SAIDA: tabuleiro resolvido
-
-COMANDO 9: brute_force
-ENTRADA:
-hash_simulado
-senha123|teste123|admin|password|12345678|ACOBRAVAIFUMAR
-SAIDA: senha123`,
-                rules: `
-REGRAS OBRIGATORIAS:
-> Implementar TODOS os 9 algoritmos listados
-> Dijkstra deve usar heap/min-priority queue para eficiencia O(E log V)
-> DFS deve funcionar tanto iterativo quanto recursivo
-> Ordenacao Topologica deve detectar ciclos (erro se ciclo existir)
-> TSP deve funcionar com backtracking + pruning (branch and bound)
-> Maior caminho em DAG: usar DP top-down com memoization
-> Subset Sum: implementar com programacao dinamica 2D
-> Mochila 0/1: implementar DP 2D ou otimizado 1D
-> Sudoku: usar backtracking com constraint propagation
-> Quebrador: gerar combinacoes de forma eficiente
-> Tratar TODOS os casos de borda e entradas invalidas
-> PERFORMANCE: TSP deve usar pruning de branch-and-bound
-> Sudoku deve ser capaz de resolver sudokus faceis em <1s
-
-DESAFIO ULTRA: Implementar o Sudoku com apenas backtracking SEM constraint propagation
- e ver se consegue resolver sudokus medios em tempo aceitavel!`,
-                interface: `
-INTERFACE SUGERIDA:
-Interface de analista de alto nivel:
-
-1. Painel lateral com todos os 9 algoritmos
-2. Visualizacao de grafos com representacao textual
-3. Animacao dos passos do algoritmo (para Dijkstra, DFS, etc)
-4. Mostrar a tabela DP durante a execucao (Subset Sum, Mochila)
-5. Visualizacao do tabuleiro Sudoku sendo resolvido em tempo real
-6. Botao para avancar/recuar passo a passo
-7. Comparacao de performance entre diferentes abordagens
-8. Modo DEBUG com logs detalhados
-
-PARA DIJKSTRA: Mostrar o heap e relaxamento das arestas
-PARA SUDOKU: Mostrar o backtracking acontecendo celula por celula
-PARA TSP: Mostrar as rotas sendo exploradas e descartadas`
+                narrative: `INCRÍVEL! Você completou as missões anteriores com sucesso!
+	Agora é hora da missão mais crítica da operação.
+	Nossas equipes de campo precisam escalar estruturas para infiltrar
+	o quartel-general do Sindicato. Cada soldado carrega equipamentos
+	diferentes, e a escada de assalto possui limites de segurança rigorosos.
+	Sua missão é calcular, dado o peso total do soldado com equipamento,
+	qual é a INCLINAÇÃO MÁXIMA que a escada suporta com segurança
+	e, inversamente, dado um ângulo, qual é o peso máximo permitido.`,
+	                mission: `Sua missão é implementar um CALCULADOR DE INCLINAÇÃO DE ESCADA que determine,
+	com base no peso do soldado (em kg), a inclinação máxima segura da escada (em graus),
+	e vice-versa.
+	
+	FÓRMULAS DE CÁLCULO:
+	- Ângulo Máximo (graus) = 75 - (Peso_Total_kg - 80) × 0.15
+	- Peso Máximo (kg) = 80 + (75 - Ângulo_Desejado) / 0.15`,
+	                inputs: `
+	ENTRADA:
+	- Peso do soldado (kg): número decimal (ex: 95.5)
+	- Peso do equipamento (kg): número decimal (ex: 15.0)
+	- Modo: "peso→ângulo" ou "ângulo→peso"
+	- Se modo "ângulo→peso": informar o ângulo desejado (graus)`,
+	                rules: `
+	REGRAS OBRIGATÓRIAS:
+	> Calcular sempre o peso TOTAL (Soldado + Equipamento)
+	> Limitar o ângulo entre 50 e 85 graus (exibir aviso se fora do intervalo)
+	> Exibir os cálculos intermediários (peso total, fórmula aplicada, resultado)
+	> Validar entradas: peso deve ser número positivo maior que zero
+	> Exibir classificação de risco: SEGURO (≤70°), ATENÇÃO (71°-78°), CRÍTICO (>78°)
+	> Implementar ambos os modos de cálculo (peso→ângulo e ângulo→peso)
+	> Tratar casos de borda: peso muito baixo, ângulo fora do intervalo`,
+	                interface: `
+	INTERFACE SUGERIDA:
+	Interface de campo direta e objetiva para os agentes:
+	
+	1. Campo para peso do soldado (kg)
+	2. Campo para peso do equipamento (kg)
+	3. Exibição automática do peso total calculado
+	4. Botão para calcular ângulo máximo
+	5. Seção separada para calcular peso máximo dado um ângulo
+	6. Indicador visual de classificação de risco (SEGURO / ATENÇÃO / CRÍTICO)
+	7. Exibição dos cálculos passo a passo`
             }
         };
 
@@ -713,8 +545,37 @@ PARA TSP: Mostrar as rotas sendo exploradas e descartadas`
         let currentView = 'main';
         let currentMission = null;
 
+        // Initialize Code Rain Effect
+        function initCodeRain() {
+            const codeRainContainer = document.getElementById('codeRain');
+            if (!codeRainContainer) return;
+            
+            const characters = ['0', '1', '<', '>', '{', '}', '[', ']', '/', '\\', '|', '~', '^', '&', '*', '#', '@', '$', '%', '(', ')', '-', '+', '='];
+            const charCount = 80;
+
+            for (let i = 0; i < charCount; i++) {
+                const char = document.createElement('div');
+                char.className = 'code-rain-char';
+                char.textContent = characters[Math.floor(Math.random() * characters.length)];
+                
+                const xPos = Math.random() * 100;
+                const delay = Math.random() * 15;
+                const duration = 5 + Math.random() * 10;
+                const size = 0.8 + Math.random() * 0.7;
+                
+                char.style.left = xPos + '%';
+                char.style.top = '-5%';
+                char.style.fontSize = size + 'rem';
+                char.style.animationDelay = delay + 's';
+                char.style.animationDuration = duration + 's';
+                
+                codeRainContainer.appendChild(char);
+            }
+        }
+
         // Initialize
         function init() {
+            initCodeRain();
             showWelcome();
             document.getElementById('terminalInput').focus();
         }
@@ -749,12 +610,19 @@ PARA TSP: Mostrar as rotas sendo exploradas e descartadas`
             addLine('');
             addLine('╔══════════════════════════════════════════════════════════════════════╗', 'system');
             addLine('║                                                                      ║', 'system');
-            addLine('║     ██████╗ ██████╗ ███████╗██╗██████╗ ███╗   ███╗                   ║', 'system');
-            addLine('║     ██╔══██╗██╔══██╗██╔════╝██║██╔══██╗████╗ ████║                   ║', 'system');
-            addLine('║     ██████╔╝██████╔╝███████╗██║██████╔╝██╔████╔██║                   ║', 'system');
-            addLine('║     ██╔═══╝ ██╔══██╗╚════██║██║██╔══██╗██║╚██╔╝██║                   ║', 'system');
-            addLine('║     ██║     ██║  ██║███████║██║██║  ██║██║ ╚═╝ ██║                   ║', 'system');
-            addLine('║     ╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚═╝     ╚═╝                   ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⡖⠎⣻⡊⠑⢦⢄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                 ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⠑⢲⠢⣄⣀⣓⢵⡌⢆⠀⠀⠀⠀⠀⠀⠀⠀⠀                  ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⠀⡈⠀⣸⠄⢸⡭⡷⣌⡄⠀⠀⠀⠀⠀⠀⠀⠀                   ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⢠⢃⢰⡛⠈⢆⣿⡂⢡⠃⠀⠀⠀⠀⠀⠀⠀⠀                  ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⢘⢮⡿⣡⣜⡼⣳⣽⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀                   ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⠈⡟⠈⠠⢡⡿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                  ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⡜⠀⠀⢡⢏⡀⠀⠀⠀⠀⢀⣀⠀⠀⠀⠀⠀⠀                   ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⢰⠁⣀⢀⡏⠈⢻⡂⣤⣐⣉⣀⣀⣀⠏⠢⠀⠀⠀                  ║', 'system');
+            addLine('║                      ⢠⠒⠉⡡⠂⠈⢹⢉⡚⣺⡗⠂⣉⠡⠄⠒⠒⠀⠢⢖⠒⠰⢀⠀⠀                   ║', 'system');
+            addLine('║                      ⡇⠀⠀⠳⡊⠐⢺⠄⣐⣋⣗⠉⠀⠀⠀⢀⣀⣀⡀⠀⡇⠀⠀⠱⡀                  ║', 'system');
+            addLine('║                      ⠑⢄⠀⠀⠀⠀⠀⢣⠀⠈⢛⠣⢤⡖⠊⠉⠀⠀⣀⠠⠂⠀⠀⢰⠁                   ║', 'system');
+            addLine('║                      ⠀⠀⠉⠒⠠⠤⠤⠖⠓⢄⡀⠁⠀⠀⠈⠉⠁⠀⠀⠀⠀⢀⡴⠃⠀                  ║', 'system');
+            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠁⠒⠒⠀⠀⠀⠒⠒⠒⠉                      ║', 'system');
             addLine('║                                                                      ║', 'system');
             addLine('╚══════════════════════════════════════════════════════════════════════╝', 'system');
             addLine('');
@@ -787,7 +655,7 @@ PARA TSP: Mostrar as rotas sendo exploradas e descartadas`
             addLine('   clear             → Limpar o terminal', 'system');
             addLine('   info              → Informações gerais do evento', 'system');
             addLine('');
-            addLine('  FORMATOÇÃO:', 'warning');
+            addLine('  FORMATAÇÃO:', 'warning');
             addLine('   Missions devem ser acessadas com: mission <numero>', 'system');
             addLine('   Exemplo: mission 1, mission 2, mission 3', 'system');
             addLine('');
@@ -808,13 +676,12 @@ PARA TSP: Mostrar as rotas sendo exploradas e descartadas`
                 addLine(`  ┌─────────────────────────────────────────────────────────────────────┐`, 'system');
                 addLine(`  │  [MISSÃO ${m.id}] ${m.title.padEnd(35)} [${diffLabel}]`.padEnd(66) + '│', 'warning');
                 addLine(`  │  ${m.subtitle.padEnd(66)}│`, 'system');
-                addLine(`  │  Pontuação: até ${m.points} pontos`.padEnd(66) + '│', 'success');
                 addLine(`  │  Comando: mission ${m.id}`.padEnd(66) + '│', 'system');
                 addLine(`  └─────────────────────────────────────────────────────────────────────┘`, 'system');
                 addLine('');
             });
 
-            addLine('  DIFICULDADE PROGRESSIVA: RSA (Básico) → César (Intermediário) → Vigenère (Avançado)', 'system');
+            addLine('  DIFICULDADE PROGRESSIVA: RSA (Básico) → Vigenère (Intermediário) → Escada (Avançado)', 'system');
             addLine('');
             addLine('  DIGITE: mission <numero> para acessar uma missão', 'system');
             addLine('  EXEMPLO: mission 1', 'system');
@@ -844,7 +711,6 @@ PARA TSP: Mostrar as rotas sendo exploradas e descartadas`
                             <span class="mission-badge">MISSÃO ${mission.id}</span>
                             <span class="mission-difficulty ${diffClass}">${diffLabel}</span>
                         </div>
-                        <span class="mission-points">ATÉ ${mission.points} PONTOS</span>
                     </div>
                     <div class="mission-narrative">${mission.narrative.replace(/\n/g, '<br>')}</div>
 
@@ -886,27 +752,46 @@ PARA TSP: Mostrar as rotas sendo exploradas e descartadas`
             addLine('═══════════════════════════════════════════════════════════════════════', 'system');
             addLine('');
             addLine('  FORMAÇÃO DE EQUIPES:', 'warning');
-            addLine('   • Equipes de 2 a 5 agentes', 'system');
-            addLine('   • Cada equipe escolhe seu codinome', 'system');
-            addLine('   • Desenvolve a própria solução para os desafios', 'system');
-            addLine('');
-            addLine('  OS DESAFIOS:', 'warning');
-            addLine('   • 3 missões de criptografia', 'system');
-            addLine('   • Dificuldade progressiva', 'system');
-            addLine('   • As missões não podem ser puladas', 'system');
-            addLine('   • Cada missão = até 1000 pontos', 'system');
-            addLine('   • Bônus por design com acessibilidade digital e documentação', 'system');
+            addLine('   • Equipes compostas por 3 a 6 participantes', 'system');
+            addLine('   • Cada equipe deve conter:', 'system');
+            addLine('     - Pelo menos 1 calouro (1º ano)', 'system');
+            addLine('     - Pelo menos 1 veterano', 'system');
+            addLine('   • Cada equipe deve definir um codinome', 'system');
+            addLine('   • Não é permitido trocar membros de equipe após o início', 'system');
             addLine('');
             addLine('  CRONOGRAMA:', 'warning');
-            addLine('   • 48 horas de operação contínua', 'system');
-            addLine('   • Início: Quarta-feira 19:15h', 'system');
-            addLine('   • Término: Quinta-feira 20:30h (premiação)', 'system');
-            addLine('   • Entrega final: Testes + Documentação + Premiação', 'system');
+            addLine('   • Operação: 48 horas disponíveis', 'system');
+            addLine('   • Duração total estimada: ~25 horas de trabalho', 'system');
+            addLine('   • Início: Quarta-feira às 19:15', 'system');
+            addLine('   • Término: Quinta-feira às 20:00', 'system');
+            addLine('   • Inclui: Entrega final, testes e validação pelos avaliadores', 'system');
+            addLine('');
+            addLine('  OS DESAFIOS:', 'warning');
+            addLine('   • Serão propostas 3 missões sequenciais (1 → 2 → 3)', 'system');
+            addLine('   • Cada missão exige:', 'system');
+            addLine('     - Desenvolvimento de um software funcional', 'system');
+            addLine('     - Implementação de uma interface utilizável', 'system');
+            addLine('   • BONUS SUPREMO: Design com foco em acessibilidade digital', 'system');
+            addLine('   • BONUS MEDIANO: Documentação técnica clara e bem estruturada', 'system');
+            addLine('   • BONUS COMPREENSIVO: Projeto organizado em repositório no GitHub', 'system');
             addLine('');
             addLine('  CRITÉRIOS DE AVALIAÇÃO:', 'warning');
-            addLine('   • Pontuação total das missões', 'system');
-            addLine('   • Qualidade da documentação', 'system');
-            addLine('   • Apresentação final dos grupos (pitch)', 'system');
+            addLine('   🧠 Qualidade do Software:', 'success');
+            addLine('     - Objetivo principal atingido?', 'system');
+            addLine('     - Quantas missões completadas corretamente?', 'system');
+            addLine('     - Sistema funcional, estável e bem estruturado?', 'system');
+            addLine('     - Interface intuitiva, responsiva e agradável?', 'system');
+            addLine('   📚 Documentação Técnica:', 'success');
+            addLine('     - Clareza na explicação do projeto', 'system');
+            addLine('     - Organização (README, instruções, arquitetura)', 'system');
+            addLine('     - Facilidade de reprodução/teste', 'system');
+            addLine('');
+            addLine('  📦 ENTREGA FINAL:', 'warning');
+            addLine('   Cada equipe deverá entregar:', 'system');
+            addLine('   - Código-fonte completo', 'system');
+            addLine('   - Link do repositório (GitHub, se aplicável)', 'system');
+            addLine('   - Documentação mínima (README com instruções)', 'system');
+            addLine('   - Aplicação funcional para testes', 'system');
             addLine('');
             addLine('═══════════════════════════════════════════════════════════════════════', 'system');
             addLine('');
