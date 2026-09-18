@@ -401,10 +401,7 @@
                 narrative: `Bem-vindo, agente! Esta é a sua primeira missão na operação "A COBRA VAI FUMAR".
 	Recebemos informações de que o Sindicato está começando a usar criptografia moderna
 	em suas comunicações. Para começar, vamos entender o básico da criptografia de chave pública.
-	
-	O algoritmo RSA é considerado o padrão-ouro da criptografia assimétrica e usa conceitos
-	de aritmética modular com números primos. Nesta missão inicial, você vai implementar
-	uma versão simplificada para entender os conceitos fundamentais.`,
+	`,
 	                mission: `Sua missão é implementar o algoritmo RSA SIMPLIFICADO para criptografar e descriptografar mensagens.`,
 	                inputs: `
 	ENTRADA:
@@ -421,17 +418,8 @@
 	> Tratar letras maiúsculas e minúsculas corretamente
 	> Validar que p e q são números primos
 	> Validar que e e phi são coprimos (MDC = 1)
-	> Implementar tratamento de erros para entradas inválidas`,
-	
-	                interface: `
-	INTERFACE SUGERIDA:
-	Para esta missão inicial, a interface pode ser simples:
-	
-	1. Campo de entrada para a mensagem
-	2. Campos para p, q, e
-	3. Botão para criptografar e descriptografar
-	4. Exibição dos cálculos intermediários (n, phi, d)
-	5. Área de resultado formatada`
+	> Implementar tratamento de erros para entradas inválidas
+		> A solução deve ter uma interface utilizável`,
             },
             2: {
                 id: 2,
@@ -445,34 +433,12 @@
 	de frequência simples.
 	Sua missão é implementar a CIFRA DE VIGENÈRE completa, capaz de
 	criptografar e descriptografar qualquer mensagem usando uma chave secreta.`,
-	                mission: `Sua missão é implementar a CIFRA DE VIGENÈRE para criptografar e descriptografar mensagens.
-	
-	A cifra de Vigenère é uma extensão da Cifra de César: em vez de deslocar todas
-	as letras pelo mesmo valor, cada letra é deslocada pelo valor da letra
-	correspondente na chave (repetida ciclicamente).
-	
-	FÓRMULA:
-	- Criptografar: C[i] = (M[i] + K[i]) mod 26
-	- Descriptografar: M[i] = (C[i] - K[i] + 26) mod 26
-	
-	Onde M[i] é a posição da letra da mensagem (A=0, B=1, ..., Z=25),
-	K[i] é a posição da letra da chave (repetida ciclicamente) e
-	C[i] é a posição da letra cifrada.`,
+	                mission: `Sua missão é implementar a CIFRA DE VIGENÈRE para criptografar e descriptografar mensagens.`,
 	                inputs: `
 	ENTRADA:
 	- Mensagem (M): string de texto (letras e espaços)
 	- Chave (K): string apenas com letras (sem espaços)
-	- Modo: "criptografar" ou "descriptografar"
-	
-	EXEMPLO — CRIPTOGRAFAR:
-	Mensagem: ATACAR BASE NORTE
-	Chave: COBRA
-	Saída: CVCEET DSSE PGVXE
-	
-	EXEMPLO — DESCRIPTOGRAFAR:
-	Mensagem: CVCEET DSSE PGVXE
-	Chave: COBRA
-	Saída: ATACAR BASE NORTE`,
+	- Modo: "criptografar" ou "descriptografar"`,
 	                rules: `
 	REGRAS OBRIGATÓRIAS:
 	> Tratar letras maiúsculas e minúsculas (converter para maiúsculas internamente)
@@ -480,26 +446,15 @@
 	> A chave deve ser repetida ciclicamente apenas sobre as letras (ignorar espaços)
 	> Validar que a chave contém apenas letras (erro se conter números ou símbolos)
 	> Exibir os cálculos intermediários: chave expandida, deslocamentos aplicados
-	> Mostrar a tabela de Vigenère (quadrado de Vigenère) na interface`,
-	                interface: `
-	INTERFACE SUGERIDA:
-	Interface simples e direta para os agentes de campo:
-	
-	1. Campo de entrada para a mensagem
-	2. Campo para a chave secreta
-	3. Botões para criptografar e descriptografar
-	4. Exibição da chave expandida (repetida para cobrir a mensagem)
-	5. Tabela mostrando letra original → deslocamento → letra cifrada
-	6. Área de resultado formatada e destacada`
+	> Mostrar a tabela de Vigenère (quadrado de Vigenère) na interface
+		> A solução deve ter uma interface utilizável`,
             },
             3: {
                 id: 3,
                 title: "ESCADA DE ASSALTO",
                 subtitle: "Cálculo de Inclinação Máxima por Peso do Soldado",
                 difficulty: "Avançado",
-                narrative: `INCRÍVEL! Você completou as missões anteriores com sucesso!
-	Agora é hora da missão mais crítica da operação.
-	Nossas equipes de campo precisam escalar estruturas para infiltrar
+                narrative: `Nossas equipes de campo precisam escalar estruturas para infiltrar
 	o quartel-general do Sindicato. Cada soldado carrega equipamentos
 	diferentes, e a escada de assalto possui limites de segurança rigorosos.
 	Sua missão é calcular, dado o peso total do soldado com equipamento,
@@ -507,11 +462,7 @@
 	e, inversamente, dado um ângulo, qual é o peso máximo permitido.`,
 	                mission: `Sua missão é implementar um CALCULADOR DE INCLINAÇÃO DE ESCADA que determine,
 	com base no peso do soldado (em kg), a inclinação máxima segura da escada (em graus),
-	e vice-versa.
-	
-	FÓRMULAS DE CÁLCULO:
-	- Ângulo Máximo (graus) = 75 - (Peso_Total_kg - 80) × 0.15
-	- Peso Máximo (kg) = 80 + (75 - Ângulo_Desejado) / 0.15`,
+	e vice-versa.`,
 	                inputs: `
 	ENTRADA:
 	- Peso do soldado (kg): número decimal (ex: 95.5)
@@ -526,18 +477,8 @@
 	> Validar entradas: peso deve ser número positivo maior que zero
 	> Exibir classificação de risco: SEGURO (≤70°), ATENÇÃO (71°-78°), CRÍTICO (>78°)
 	> Implementar ambos os modos de cálculo (peso→ângulo e ângulo→peso)
-	> Tratar casos de borda: peso muito baixo, ângulo fora do intervalo`,
-	                interface: `
-	INTERFACE SUGERIDA:
-	Interface de campo direta e objetiva para os agentes:
-	
-	1. Campo para peso do soldado (kg)
-	2. Campo para peso do equipamento (kg)
-	3. Exibição automática do peso total calculado
-	4. Botão para calcular ângulo máximo
-	5. Seção separada para calcular peso máximo dado um ângulo
-	6. Indicador visual de classificação de risco (SEGURO / ATENÇÃO / CRÍTICO)
-	7. Exibição dos cálculos passo a passo`
+	> Tratar casos de borda: peso muito baixo, ângulo fora do intervalo
+		> A solução deve ter uma interface utilizável`,
             }
         };
 
@@ -610,18 +551,6 @@
             addLine('');
             addLine('╔══════════════════════════════════════════════════════════════════════╗', 'system');
             addLine('║                                                                      ║', 'system');
-            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⡖⠎⣻⡊⠑⢦⢄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                 ║', 'system');
-            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⠑⢲⠢⣄⣀⣓⢵⡌⢆⠀⠀⠀⠀⠀⠀⠀⠀⠀                  ║', 'system');
-            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⠀⡈⠀⣸⠄⢸⡭⡷⣌⡄⠀⠀⠀⠀⠀⠀⠀⠀                   ║', 'system');
-            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⢠⢃⢰⡛⠈⢆⣿⡂⢡⠃⠀⠀⠀⠀⠀⠀⠀⠀                  ║', 'system');
-            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⢘⢮⡿⣡⣜⡼⣳⣽⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀                   ║', 'system');
-            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⠈⡟⠈⠠⢡⡿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                  ║', 'system');
-            addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⡜⠀⠀⢡⢏⡀⠀⠀⠀⠀⢀⣀⠀⠀⠀⠀⠀⠀                   ║', 'system');
-            addLine('║                      ⠀⠀⠀⠀⠀⠀⢰⠁⣀⢀⡏⠈⢻⡂⣤⣐⣉⣀⣀⣀⠏⠢⠀⠀⠀                  ║', 'system');
-            addLine('║                      ⢠⠒⠉⡡⠂⠈⢹⢉⡚⣺⡗⠂⣉⠡⠄⠒⠒⠀⠢⢖⠒⠰⢀⠀⠀                   ║', 'system');
-            addLine('║                      ⡇⠀⠀⠳⡊⠐⢺⠄⣐⣋⣗⠉⠀⠀⠀⢀⣀⣀⡀⠀⡇⠀⠀⠱⡀                  ║', 'system');
-            addLine('║                      ⠑⢄⠀⠀⠀⠀⠀⢣⠀⠈⢛⠣⢤⡖⠊⠉⠀⠀⣀⠠⠂⠀⠀⢰⠁                   ║', 'system');
-            addLine('║                      ⠀⠀⠉⠒⠠⠤⠤⠖⠓⢄⡀⠁⠀⠀⠈⠉⠁⠀⠀⠀⠀⢀⡴⠃⠀                  ║', 'system');
             addLine('║                      ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠁⠒⠒⠀⠀⠀⠒⠒⠒⠉                      ║', 'system');
             addLine('║                                                                      ║', 'system');
             addLine('╚══════════════════════════════════════════════════════════════════════╝', 'system');
@@ -653,11 +582,7 @@
             addLine('   mission <num>      → Acessar missão específica (1, 2 ou 3)', 'system');
             addLine('   back              → Voltar ao menu principal', 'system');
             addLine('   clear             → Limpar o terminal', 'system');
-            addLine('   info              → Informações gerais do evento', 'system');
             addLine('');
-            addLine('  FORMATAÇÃO:', 'warning');
-            addLine('   Missions devem ser acessadas com: mission <numero>', 'system');
-            addLine('   Exemplo: mission 1, mission 2, mission 3', 'system');
             addLine('');
             addLine('═══════════════════════════════════════════════════════════════════════', 'system');
             addLine('');
@@ -728,11 +653,6 @@
                         <div class="mission-section-title">▸ REGRAS OBRIGATÓRIAS</div>
                         <div class="spec-item" style="background: rgba(255, 193, 7, 0.08); border-left-color: #ffc107;">${mission.rules.replace(/\n/g, '<br>')}</div>
                     </div>
-
-                    <div class="mission-section">
-                        <div class="mission-section-title">▸ INTERFACE SUGERIDA</div>
-                        <div class="spec-item" style="background: rgba(110, 181, 255, 0.08); border-left-color: #6eb5ff;">${mission.interface.replace(/\n/g, '<br>')}</div>
-                    </div>
                 </div>
             `);
 
@@ -741,59 +661,6 @@
             addLine(`  MISSÃO ${mission.id}: ${mission.title} - ${mission.subtitle}`, 'title');
             addLine('═══════════════════════════════════════════════════════════════════════', 'system');
             addLine('  Digite "back" para voltar ao menu principal', 'system');
-            addLine('');
-        }
-
-        // Show info
-        function showInfo() {
-            addLine('');
-            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
-            addLine('  INFORMAÇÕES DO EVENTO', 'title');
-            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
-            addLine('');
-            addLine('  FORMAÇÃO DE EQUIPES:', 'warning');
-            addLine('   • Equipes compostas por 3 a 6 participantes', 'system');
-            addLine('   • Cada equipe deve conter:', 'system');
-            addLine('     - Pelo menos 1 calouro (1º ano)', 'system');
-            addLine('     - Pelo menos 1 veterano', 'system');
-            addLine('   • Cada equipe deve definir um codinome', 'system');
-            addLine('   • Não é permitido trocar membros de equipe após o início', 'system');
-            addLine('');
-            addLine('  CRONOGRAMA:', 'warning');
-            addLine('   • Operação: 48 horas disponíveis', 'system');
-            addLine('   • Duração total estimada: ~25 horas de trabalho', 'system');
-            addLine('   • Início: Quarta-feira às 19:15', 'system');
-            addLine('   • Término: Quinta-feira às 20:00', 'system');
-            addLine('   • Inclui: Entrega final, testes e validação pelos avaliadores', 'system');
-            addLine('');
-            addLine('  OS DESAFIOS:', 'warning');
-            addLine('   • Serão propostas 3 missões sequenciais (1 → 2 → 3)', 'system');
-            addLine('   • Cada missão exige:', 'system');
-            addLine('     - Desenvolvimento de um software funcional', 'system');
-            addLine('     - Implementação de uma interface utilizável', 'system');
-            addLine('   • BONUS SUPREMO: Design com foco em acessibilidade digital', 'system');
-            addLine('   • BONUS MEDIANO: Documentação técnica clara e bem estruturada', 'system');
-            addLine('   • BONUS COMPREENSIVO: Projeto organizado em repositório no GitHub', 'system');
-            addLine('');
-            addLine('  CRITÉRIOS DE AVALIAÇÃO:', 'warning');
-            addLine('   🧠 Qualidade do Software:', 'success');
-            addLine('     - Objetivo principal atingido?', 'system');
-            addLine('     - Quantas missões completadas corretamente?', 'system');
-            addLine('     - Sistema funcional, estável e bem estruturado?', 'system');
-            addLine('     - Interface intuitiva, responsiva e agradável?', 'system');
-            addLine('   📚 Documentação Técnica:', 'success');
-            addLine('     - Clareza na explicação do projeto', 'system');
-            addLine('     - Organização (README, instruções, arquitetura)', 'system');
-            addLine('     - Facilidade de reprodução/teste', 'system');
-            addLine('');
-            addLine('  📦 ENTREGA FINAL:', 'warning');
-            addLine('   Cada equipe deverá entregar:', 'system');
-            addLine('   - Código-fonte completo', 'system');
-            addLine('   - Link do repositório (GitHub, se aplicável)', 'system');
-            addLine('   - Documentação mínima (README com instruções)', 'system');
-            addLine('   - Aplicação funcional para testes', 'system');
-            addLine('');
-            addLine('═══════════════════════════════════════════════════════════════════════', 'system');
             addLine('');
         }
 
@@ -839,11 +706,6 @@
                     document.getElementById('terminalBody').innerHTML = '';
                     addLine('Terminal limpo.', 'system');
                     addLine('');
-                    break;
-
-                case 'info':
-                case 'informacoes':
-                    showInfo();
                     break;
 
                 // Easter eggs
